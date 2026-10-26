@@ -1,0 +1,11 @@
+/* Explicit UC4 cleanup. Run only after saving all UC4 evidence. */
+USE [DBMS_EW_Group02];
+SET NOCOUNT ON;
+IF OBJECT_ID(N'dbo.UC4_Read_C',N'U') IS NOT NULL DROP TABLE dbo.UC4_Read_C;
+IF OBJECT_ID(N'dbo.UC4_Write_C',N'U') IS NOT NULL DROP TABLE dbo.UC4_Write_C;
+IF EXISTS(SELECT 1 FROM sys.fulltext_catalogs WHERE name=N'UC4_FT_Read') DROP FULLTEXT CATALOG UC4_FT_Read;
+IF EXISTS(SELECT 1 FROM sys.fulltext_catalogs WHERE name=N'UC4_FT_Write') DROP FULLTEXT CATALOG UC4_FT_Write;
+IF OBJECT_ID(N'dbo.UC4_Read_A',N'U') IS NOT NULL DROP TABLE dbo.UC4_Read_A;
+IF OBJECT_ID(N'dbo.UC4_Write_A',N'U') IS NOT NULL DROP TABLE dbo.UC4_Write_A;
+IF OBJECT_ID(N'dbo.UC4_Seed_10K',N'U') IS NOT NULL DROP TABLE dbo.UC4_Seed_10K;
+SELECT N'UC4_CLEANUP_COMPLETE' section;

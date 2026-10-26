@@ -1,0 +1,43 @@
+\chapter{Introduction}
+\label{ch:intro}
+
+\section{Assignment Objectives and Scope}
+In the CO3021 Database Management Systems course, standard lectures introduce primary and secondary indexes, dense and sparse B+ trees, and hashing. While these fundamentals explain how a database locates a single key, real applications rarely filter or sort on just one simple column. This project addresses the course topic \emph{Other Indexing Structures and Indexes in Today's DBMSs} by answering three practical questions:
+\begin{enumerate}
+\item \textbf{What are they?} Which indexing structures and design techniques do modern DBMSs provide beyond single-column B+ trees?
+\item \textbf{How are they supported?} How do a relational system (\textbf{SQL Server 2025}) and a document system (\textbf{MongoDB 7.0}) implement, optimize, and maintain these indexes under real queries and writes?
+\item \textbf{When should engineers use them?} Which workloads improve over the baseline, when does the query optimizer reject an index, and what storage or write costs must we pay?
+\end{enumerate}
+
+Rather than listing index syntax in isolation, we organize the entire report around a \textbf{workload-first methodology}. Every index exists to solve a specific query bottleneck. For each use case, we start from the database problem and its query, explain why a particular index fits theoretically, and then test whether actual execution plans and measurements confirm that expectation.
+
+\section{Physical Structures vs.\ Indexing Techniques}
+When studying modern DBMS documentation, it is easy to confuse a new \emph{physical data structure} with a \emph{design technique} applied to an existing B-tree. To keep our analysis clear, we separate four concepts throughout this report \cite{silberschatz2020,mssqlindex,mongoexplain}:
+\ConceptDefinition{Physical Indexing Structure}{How data is organized on disk and in memory. Examples in this study are row-oriented B+ trees / B-trees (UC1--UC3, UC6), inverted token indexes (UC4), and compressed columnar segments (UC5).}
+\ConceptDefinition{Index Design Technique (Property)}{How keys, included columns, or row filters are configured for a query. Compound keys (UC1), filtered/partial predicates (UC2), covering columns (UC3), and multikey array entries (UC6) are design choices within B-tree-based indexing.}
+\ConceptDefinition{Textbook Sparse Index vs.\ Filtered Index}{A sparse index places one pointer per disk block on a sequentially sorted file. A filtered/partial index (UC2) is a B-tree containing only rows that satisfy a predicate such as \texttt{TEMPORARY = 'Y'}, independent of disk-block placement.}
+\ConceptDefinition{Optimizer Access Path}{The operators chosen for a particular execution, such as \texttt{Index Seek}, \texttt{Table Scan}, \texttt{RID Lookup}, or MongoDB \texttt{IXSCAN} and \texttt{FETCH}. Creating an index does not guarantee that the optimizer selects it; actual plans establish the path used.}
+
+\section{Overview of the Six Use Cases}
+We evaluate six complementary use cases (UC1--UC6) across SQL Server 2025 and MongoDB 7.0. Table~\ref{tab:uc-summary} summarizes the database problem, the chosen indexing solution, and how each concept extends standard classroom lectures.
+
+\begin{table}[H]
+\centering\small
+\caption{Overview of the six use cases (UC1--UC6) and their indexing solutions.}
+\label{tab:uc-summary}
+\begin{tabularx}{\linewidth}{@{}l >{\raggedright\arraybackslash}p{4.3cm} >{\raggedright\arraybackslash}p{3.9cm} >{\raggedright\arraybackslash}X@{}}
+\toprule
+UC & Workload Problem & Target Index Solution & Classification \& Extension Beyond Lectures\\
+\midrule
+UC1 & Multi-column equality filter and multi-column sorting & \textbf{Compound B-Tree Index} & \emph{B-tree design technique:} Tests the left-prefix rule, non-leading key queries, and sort elimination.\\
+UC2 & Filtering on a rare active flag (\texttt{TEMPORARY = 'Y'}, $0.24\%$) & \textbf{Filtered / Partial Index} & \emph{B-tree design technique:} Indexes only rows matching a predicate, cutting $>98\%$ of index storage.\\
+UC3 & Range query returning 4 extra descriptive columns & \textbf{Covering Index} (\texttt{INCLUDE} vs.\ compound keys) & \emph{B-tree design technique:} Stores projected columns in the index to eliminate base-table lookups.\\
+UC4 & Keyword and phrase search inside news articles & \textbf{Full-Text / Text Index} & \emph{Alternative physical structure:} Inverted token posting lists with word breaking and stemming.\\
+UC5 & Full-table \texttt{GROUP BY} aggregation over 1,000,000 rows & \textbf{Clustered Columnstore Index (CCI)} & \emph{Alternative physical structure (SQL Server):} Compressed column segments and batch-mode execution.\\
+UC6 & Finding objects that contain 1 or 2 categorical tags & \textbf{Multikey vs.\ Normalized Child Index} & \emph{B-tree design technique:} Indexing array elements in MongoDB vs.\ an inverted child table in SQL.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The remainder of this report is organized as follows. Chapter~\ref{ch:solutions} presents each use case, its representative queries, the chosen index mechanism, and its theoretical trade-off. Chapter~\ref{ch:methodology} describes the three datasets, exploratory data analysis (EDA), experimental workflow, and pre-benchmark expectations. Chapter~\ref{ch:results} presents the empirical results for UC1--UC6 following a uniform \emph{Question $\rightarrow$ Baseline $\rightarrow$ Index $\rightarrow$ Results $\rightarrow$ Explanation $\rightarrow$ Trade-off $\rightarrow$ Verdict} structure. Finally, Chapter~\ref{ch:conclusion} synthesizes our engineering conclusions and decision matrix, while Appendix~\ref{app:repro} provides data provenance and reproduction details.
+\FloatBarrier

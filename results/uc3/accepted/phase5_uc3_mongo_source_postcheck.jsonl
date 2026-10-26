@@ -1,0 +1,3 @@
+{"section":"SOURCE_POSTCHECK","name":"big_table_100k","rows":100000,"indexes":["_id_","TEMPORARY_1"]}
+{"section":"SOURCE_POSTCHECK","name":"big_table_1000K","rows":1000000,"indexes":["_id_","TEMPORARY_1"]}
+{"section":"UC3_COPIES_POSTCHECK","names":[]}

@@ -1,0 +1,9 @@
+s|n|y
+-|-|-
+100K|100000|254
+1000K|1000000|2405
+name
+----
+IX_DEMO_OBJECT_ID
+IX_DEMO_S2_Filtered
+IX_DEMO_S2_Full

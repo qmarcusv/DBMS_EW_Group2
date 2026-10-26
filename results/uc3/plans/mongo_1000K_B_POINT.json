@@ -1,0 +1,188 @@
+{
+  "section": "READ_PLAN",
+  "run_id": "UC3-2026-10-24T13:03:04.021Z",
+  "scale": "1000K",
+  "config": "B",
+  "query_id": "POINT",
+  "total_keys_examined": 15,
+  "total_docs_examined": 15,
+  "returned_rows": 1,
+  "plan": {
+    "explainVersion": "1",
+    "queryPlanner": {
+      "namespace": "dbms_ew_group02.uc3_bench_1000K",
+      "indexFilterSet": false,
+      "parsedQuery": {
+        "$and": [
+          {
+            "ID": {
+              "$eq": 1
+            }
+          },
+          {
+            "OBJECT_ID": {
+              "$eq": 16
+            }
+          }
+        ]
+      },
+      "queryHash": "F5B76C61",
+      "planCacheKey": "CDCF4C9C",
+      "maxIndexedOrSolutionsReached": false,
+      "maxIndexedAndSolutionsReached": false,
+      "maxScansToExplodeReached": false,
+      "winningPlan": {
+        "stage": "PROJECTION_SIMPLE",
+        "transformBy": {
+          "_id": 0,
+          "ID": 1,
+          "OWNER": 1,
+          "OBJECT_NAME": 1,
+          "OBJECT_TYPE": 1
+        },
+        "inputStage": {
+          "stage": "FETCH",
+          "filter": {
+            "ID": {
+              "$eq": 1
+            }
+          },
+          "inputStage": {
+            "stage": "IXSCAN",
+            "keyPattern": {
+              "OBJECT_ID": 1
+            },
+            "indexName": "ix_uc3_key",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "OBJECT_ID": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "forward",
+            "indexBounds": {
+              "OBJECT_ID": [
+                "[16, 16]"
+              ]
+            }
+          }
+        }
+      },
+      "rejectedPlans": []
+    },
+    "executionStats": {
+      "executionSuccess": true,
+      "nReturned": 1,
+      "executionTimeMillis": 0,
+      "totalKeysExamined": 15,
+      "totalDocsExamined": 15,
+      "executionStages": {
+        "stage": "PROJECTION_SIMPLE",
+        "nReturned": 1,
+        "executionTimeMillisEstimate": 0,
+        "works": 16,
+        "advanced": 1,
+        "needTime": 14,
+        "needYield": 0,
+        "saveState": 0,
+        "restoreState": 0,
+        "isEOF": 1,
+        "transformBy": {
+          "_id": 0,
+          "ID": 1,
+          "OWNER": 1,
+          "OBJECT_NAME": 1,
+          "OBJECT_TYPE": 1
+        },
+        "inputStage": {
+          "stage": "FETCH",
+          "filter": {
+            "ID": {
+              "$eq": 1
+            }
+          },
+          "nReturned": 1,
+          "executionTimeMillisEstimate": 0,
+          "works": 16,
+          "advanced": 1,
+          "needTime": 14,
+          "needYield": 0,
+          "saveState": 0,
+          "restoreState": 0,
+          "isEOF": 1,
+          "docsExamined": 15,
+          "alreadyHasObj": 0,
+          "inputStage": {
+            "stage": "IXSCAN",
+            "nReturned": 15,
+            "executionTimeMillisEstimate": 0,
+            "works": 16,
+            "advanced": 15,
+            "needTime": 0,
+            "needYield": 0,
+            "saveState": 0,
+            "restoreState": 0,
+            "isEOF": 1,
+            "keyPattern": {
+              "OBJECT_ID": 1
+            },
+            "indexName": "ix_uc3_key",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "OBJECT_ID": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "forward",
+            "indexBounds": {
+              "OBJECT_ID": [
+                "[16, 16]"
+              ]
+            },
+            "keysExamined": 15,
+            "seeks": 1,
+            "dupsTested": 0,
+            "dupsDropped": 0
+          }
+        }
+      }
+    },
+    "command": {
+      "find": "uc3_bench_1000K",
+      "filter": {
+        "OBJECT_ID": 16,
+        "ID": 1
+      },
+      "projection": {
+        "_id": 0,
+        "ID": 1,
+        "OWNER": 1,
+        "OBJECT_NAME": 1,
+        "OBJECT_TYPE": 1
+      },
+      "$db": "dbms_ew_group02"
+    },
+    "serverInfo": {
+      "host": "MarcusVu",
+      "port": 27017,
+      "version": "7.0.12",
+      "gitVersion": "b6513ce0781db6818e24619e8a461eae90bc94fc"
+    },
+    "serverParameters": {
+      "internalQueryFacetBufferSizeBytes": 104857600,
+      "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+      "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+      "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+      "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+      "internalQueryProhibitBlockingMergeOnMongoS": 0,
+      "internalQueryMaxAddToSetBytes": 104857600,
+      "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+      "internalQueryFrameworkControl": "trySbeRestricted"
+    },
+    "ok": 1
+  }
+}

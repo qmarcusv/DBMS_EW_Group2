@@ -1,0 +1,192 @@
+{
+  "section": "READ_PLAN",
+  "run_id": "UC2-2026-10-24T11:08:09.339Z",
+  "scale": "1000K",
+  "config": "B",
+  "value": "Y",
+  "total_keys_examined": 1670,
+  "total_docs_examined": 0,
+  "returned_rows": 615,
+  "plan": {
+    "explainVersion": "1",
+    "queryPlanner": {
+      "namespace": "dbms_ew_group02.uc2_bench_1000K",
+      "indexFilterSet": false,
+      "parsedQuery": {
+        "$and": [
+          {
+            "OBJECT_TYPE": {
+              "$eq": "TABLE"
+            }
+          },
+          {
+            "TEMPORARY": {
+              "$eq": "Y"
+            }
+          },
+          {
+            "OBJECT_ID": {
+              "$lte": 10000
+            }
+          },
+          {
+            "OBJECT_ID": {
+              "$gte": 1
+            }
+          }
+        ]
+      },
+      "queryHash": "3F232FDF",
+      "planCacheKey": "9C4D52D3",
+      "maxIndexedOrSolutionsReached": false,
+      "maxIndexedAndSolutionsReached": false,
+      "maxScansToExplodeReached": false,
+      "winningPlan": {
+        "stage": "PROJECTION_COVERED",
+        "transformBy": {
+          "_id": 0,
+          "OBJECT_TYPE": 1,
+          "OBJECT_ID": 1,
+          "TEMPORARY": 1
+        },
+        "inputStage": {
+          "stage": "IXSCAN",
+          "keyPattern": {
+            "OBJECT_TYPE": 1,
+            "OBJECT_ID": 1,
+            "TEMPORARY": 1
+          },
+          "indexName": "ix_uc2_full",
+          "isMultiKey": false,
+          "multiKeyPaths": {
+            "OBJECT_TYPE": [],
+            "OBJECT_ID": [],
+            "TEMPORARY": []
+          },
+          "isUnique": false,
+          "isSparse": false,
+          "isPartial": false,
+          "indexVersion": 2,
+          "direction": "forward",
+          "indexBounds": {
+            "OBJECT_TYPE": [
+              "[\"TABLE\", \"TABLE\"]"
+            ],
+            "OBJECT_ID": [
+              "[1, 10000]"
+            ],
+            "TEMPORARY": [
+              "[\"Y\", \"Y\"]"
+            ]
+          }
+        }
+      },
+      "rejectedPlans": []
+    },
+    "executionStats": {
+      "executionSuccess": true,
+      "nReturned": 615,
+      "executionTimeMillis": 9,
+      "totalKeysExamined": 1670,
+      "totalDocsExamined": 0,
+      "executionStages": {
+        "stage": "PROJECTION_COVERED",
+        "nReturned": 615,
+        "executionTimeMillisEstimate": 1,
+        "works": 1670,
+        "advanced": 615,
+        "needTime": 1054,
+        "needYield": 0,
+        "saveState": 1,
+        "restoreState": 1,
+        "isEOF": 1,
+        "transformBy": {
+          "_id": 0,
+          "OBJECT_TYPE": 1,
+          "OBJECT_ID": 1,
+          "TEMPORARY": 1
+        },
+        "inputStage": {
+          "stage": "IXSCAN",
+          "nReturned": 615,
+          "executionTimeMillisEstimate": 1,
+          "works": 1670,
+          "advanced": 615,
+          "needTime": 1054,
+          "needYield": 0,
+          "saveState": 1,
+          "restoreState": 1,
+          "isEOF": 1,
+          "keyPattern": {
+            "OBJECT_TYPE": 1,
+            "OBJECT_ID": 1,
+            "TEMPORARY": 1
+          },
+          "indexName": "ix_uc2_full",
+          "isMultiKey": false,
+          "multiKeyPaths": {
+            "OBJECT_TYPE": [],
+            "OBJECT_ID": [],
+            "TEMPORARY": []
+          },
+          "isUnique": false,
+          "isSparse": false,
+          "isPartial": false,
+          "indexVersion": 2,
+          "direction": "forward",
+          "indexBounds": {
+            "OBJECT_TYPE": [
+              "[\"TABLE\", \"TABLE\"]"
+            ],
+            "OBJECT_ID": [
+              "[1, 10000]"
+            ],
+            "TEMPORARY": [
+              "[\"Y\", \"Y\"]"
+            ]
+          },
+          "keysExamined": 1670,
+          "seeks": 1055,
+          "dupsTested": 0,
+          "dupsDropped": 0
+        }
+      }
+    },
+    "command": {
+      "find": "uc2_bench_1000K",
+      "filter": {
+        "TEMPORARY": "Y",
+        "OBJECT_TYPE": "TABLE",
+        "OBJECT_ID": {
+          "$gte": 1,
+          "$lte": 10000
+        }
+      },
+      "projection": {
+        "_id": 0,
+        "OBJECT_TYPE": 1,
+        "OBJECT_ID": 1,
+        "TEMPORARY": 1
+      },
+      "$db": "dbms_ew_group02"
+    },
+    "serverInfo": {
+      "host": "MarcusVu",
+      "port": 27017,
+      "version": "7.0.12",
+      "gitVersion": "b6513ce0781db6818e24619e8a461eae90bc94fc"
+    },
+    "serverParameters": {
+      "internalQueryFacetBufferSizeBytes": 104857600,
+      "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+      "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+      "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+      "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+      "internalQueryProhibitBlockingMergeOnMongoS": 0,
+      "internalQueryMaxAddToSetBytes": 104857600,
+      "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+      "internalQueryFrameworkControl": "trySbeRestricted"
+    },
+    "ok": 1
+  }
+}

@@ -1,0 +1,2 @@
+2026-10-25T11:44:15.065+0700	connected to: mongodb://localhost/
+2026-10-25T11:44:15.408+0700	10000 document(s) imported successfully. 0 document(s) failed to import.

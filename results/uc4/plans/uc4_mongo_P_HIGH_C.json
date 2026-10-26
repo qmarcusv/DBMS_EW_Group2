@@ -1,0 +1,259 @@
+{
+  "section": "READ_PLAN",
+  "run_id": "UC4-MONGO-2026-10-25T04:24:27.003Z",
+  "query_id": "P_HIGH",
+  "config": "C",
+  "total_keys_examined": 5475,
+  "total_docs_examined": 3537,
+  "returned_rows": 1851,
+  "plan": {
+    "explainVersion": "1",
+    "queryPlanner": {
+      "namespace": "dbms_ew_group02.uc4_read_C",
+      "indexFilterSet": false,
+      "parsedQuery": {
+        "$text": {
+          "$search": "\"white house\"",
+          "$language": "english",
+          "$caseSensitive": false,
+          "$diacriticSensitive": false
+        }
+      },
+      "queryHash": "442C54DD",
+      "planCacheKey": "E230455A",
+      "maxIndexedOrSolutionsReached": false,
+      "maxIndexedAndSolutionsReached": false,
+      "maxScansToExplodeReached": false,
+      "winningPlan": {
+        "stage": "PROJECTION_SIMPLE",
+        "transformBy": {
+          "_id": 0,
+          "DOC_ID": 1
+        },
+        "inputStage": {
+          "stage": "TEXT_MATCH",
+          "indexPrefix": {},
+          "indexName": "ix_uc4_body_text",
+          "parsedTextQuery": {
+            "terms": [
+              "hous",
+              "white"
+            ],
+            "negatedTerms": [],
+            "phrases": [
+              "white house"
+            ],
+            "negatedPhrases": []
+          },
+          "textIndexVersion": 3,
+          "inputStage": {
+            "stage": "FETCH",
+            "inputStage": {
+              "stage": "OR",
+              "inputStages": [
+                {
+                  "stage": "IXSCAN",
+                  "keyPattern": {
+                    "_fts": "text",
+                    "_ftsx": 1
+                  },
+                  "indexName": "ix_uc4_body_text",
+                  "isMultiKey": true,
+                  "isUnique": false,
+                  "isSparse": false,
+                  "isPartial": false,
+                  "indexVersion": 2,
+                  "direction": "backward",
+                  "indexBounds": {}
+                },
+                {
+                  "stage": "IXSCAN",
+                  "keyPattern": {
+                    "_fts": "text",
+                    "_ftsx": 1
+                  },
+                  "indexName": "ix_uc4_body_text",
+                  "isMultiKey": true,
+                  "isUnique": false,
+                  "isSparse": false,
+                  "isPartial": false,
+                  "indexVersion": 2,
+                  "direction": "backward",
+                  "indexBounds": {}
+                }
+              ]
+            }
+          }
+        }
+      },
+      "rejectedPlans": []
+    },
+    "executionStats": {
+      "executionSuccess": true,
+      "nReturned": 1851,
+      "executionTimeMillis": 31,
+      "totalKeysExamined": 5475,
+      "totalDocsExamined": 3537,
+      "executionStages": {
+        "stage": "PROJECTION_SIMPLE",
+        "nReturned": 1851,
+        "executionTimeMillisEstimate": 7,
+        "works": 5477,
+        "advanced": 1851,
+        "needTime": 3625,
+        "needYield": 0,
+        "saveState": 5,
+        "restoreState": 5,
+        "isEOF": 1,
+        "transformBy": {
+          "_id": 0,
+          "DOC_ID": 1
+        },
+        "inputStage": {
+          "stage": "TEXT_MATCH",
+          "nReturned": 1851,
+          "executionTimeMillisEstimate": 7,
+          "works": 5477,
+          "advanced": 1851,
+          "needTime": 3625,
+          "needYield": 0,
+          "saveState": 5,
+          "restoreState": 5,
+          "isEOF": 1,
+          "indexPrefix": {},
+          "indexName": "ix_uc4_body_text",
+          "parsedTextQuery": {
+            "terms": [
+              "hous",
+              "white"
+            ],
+            "negatedTerms": [],
+            "phrases": [
+              "white house"
+            ],
+            "negatedPhrases": []
+          },
+          "textIndexVersion": 3,
+          "docsRejected": 1686,
+          "inputStage": {
+            "stage": "FETCH",
+            "nReturned": 3537,
+            "executionTimeMillisEstimate": 2,
+            "works": 5477,
+            "advanced": 3537,
+            "needTime": 1939,
+            "needYield": 0,
+            "saveState": 5,
+            "restoreState": 5,
+            "isEOF": 1,
+            "docsExamined": 3537,
+            "alreadyHasObj": 0,
+            "inputStage": {
+              "stage": "OR",
+              "nReturned": 3537,
+              "executionTimeMillisEstimate": 2,
+              "works": 5477,
+              "advanced": 3537,
+              "needTime": 1939,
+              "needYield": 0,
+              "saveState": 5,
+              "restoreState": 5,
+              "isEOF": 1,
+              "dupsTested": 5475,
+              "dupsDropped": 1938,
+              "inputStages": [
+                {
+                  "stage": "IXSCAN",
+                  "nReturned": 3013,
+                  "executionTimeMillisEstimate": 0,
+                  "works": 3014,
+                  "advanced": 3013,
+                  "needTime": 0,
+                  "needYield": 0,
+                  "saveState": 5,
+                  "restoreState": 5,
+                  "isEOF": 1,
+                  "keyPattern": {
+                    "_fts": "text",
+                    "_ftsx": 1
+                  },
+                  "indexName": "ix_uc4_body_text",
+                  "isMultiKey": true,
+                  "isUnique": false,
+                  "isSparse": false,
+                  "isPartial": false,
+                  "indexVersion": 2,
+                  "direction": "backward",
+                  "indexBounds": {},
+                  "keysExamined": 3013,
+                  "seeks": 1,
+                  "dupsTested": 3013,
+                  "dupsDropped": 0
+                },
+                {
+                  "stage": "IXSCAN",
+                  "nReturned": 2462,
+                  "executionTimeMillisEstimate": 2,
+                  "works": 2463,
+                  "advanced": 2462,
+                  "needTime": 0,
+                  "needYield": 0,
+                  "saveState": 5,
+                  "restoreState": 5,
+                  "isEOF": 1,
+                  "keyPattern": {
+                    "_fts": "text",
+                    "_ftsx": 1
+                  },
+                  "indexName": "ix_uc4_body_text",
+                  "isMultiKey": true,
+                  "isUnique": false,
+                  "isSparse": false,
+                  "isPartial": false,
+                  "indexVersion": 2,
+                  "direction": "backward",
+                  "indexBounds": {},
+                  "keysExamined": 2462,
+                  "seeks": 1,
+                  "dupsTested": 2462,
+                  "dupsDropped": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "command": {
+      "find": "uc4_read_C",
+      "filter": {
+        "$text": {
+          "$search": "\"white house\""
+        }
+      },
+      "projection": {
+        "_id": 0,
+        "DOC_ID": 1
+      },
+      "$db": "dbms_ew_group02"
+    },
+    "serverInfo": {
+      "host": "MarcusVu",
+      "port": 27017,
+      "version": "7.0.12",
+      "gitVersion": "b6513ce0781db6818e24619e8a461eae90bc94fc"
+    },
+    "serverParameters": {
+      "internalQueryFacetBufferSizeBytes": 104857600,
+      "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+      "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+      "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+      "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+      "internalQueryProhibitBlockingMergeOnMongoS": 0,
+      "internalQueryMaxAddToSetBytes": 104857600,
+      "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+      "internalQueryFrameworkControl": "trySbeRestricted"
+    },
+    "ok": 1
+  }
+}

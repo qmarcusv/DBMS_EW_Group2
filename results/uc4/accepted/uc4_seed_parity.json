@@ -1,0 +1,1 @@
+{"section": "UC4_SEED_PARITY", "expected_rows": 10000, "mongo_rows": 10000, "sql_rows": 10000, "mongo_mismatches": 0, "sql_mismatches": 0, "read_copy_mismatches": {"SQL_A": 0, "SQL_C": 0, "MONGO_A": 0, "MONGO_C": 0}, "corpus_sha256": "2f09bc3aef865ccc85cc80eba9cc9104aae2af8fa9e81cb845dadc345fd8dd97", "status": "PASS"}

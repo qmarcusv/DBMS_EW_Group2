@@ -1,0 +1,4 @@
+Changed database context to 'DBMS_EW_Group02'.
+section|source_100k|source_1m|remaining_uc2_copies
+-------|-----------|---------|--------------------
+AFTER_CLEANUP|100000|1000000|0

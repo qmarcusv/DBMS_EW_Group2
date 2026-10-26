@@ -1,0 +1,8 @@
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+University database courses introduce single-column B+ trees, hashing, and dense or sparse indexes on ordered files. In production systems, however, many application queries still run slowly when they rely only on textbook single-column indexes. This report investigates \textbf{Other Indexing Structures and Indexes in Today's DBMSs} using \textbf{SQL Server 2025} (build \texttt{17.0.1145.4}) and \textbf{MongoDB 7.0.12}.
+
+We follow a workload-first approach across six application use cases (UC1--UC6): multi-column catalog lookups and sorting (UC1), queries on a skewed $0.24\%$ active subset (UC2), range queries returning multiple columns (UC3), natural-language keyword and phrase search over news articles (UC4), analytical aggregations over one million rows (UC5), and multi-tag membership queries (UC6). For each use case, we define the database problem and representative query, explain why a specific indexing mechanism should help, and test it on isolated database copies against an unindexed baseline and a conventional index.
+
+Across 128 read test cases, 104 write test cases, and 136 captured execution plans, we measure both the read benefits and the engineering costs in index storage, build time, and write maintenance. Crucially, we also show when an index fails to help---such as when a query omits the leading key of a compound index, queries rows outside a filtered index, or incurs heavy synchronous write penalties on text updates---giving database students and engineers clear rules for choosing the right index.
+\clearpage

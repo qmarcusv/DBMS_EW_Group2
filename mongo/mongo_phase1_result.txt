@@ -1,0 +1,26 @@
+{"section":"SERVER","database":"dbms_ew_group02","serverVersion":"7.0.12","mongoshVersion":"Run mongosh --version and record it with this output"}
+{"section":"STORAGE_ENGINE","name":"wiredTiger","persistent":true}
+{"section":"COLLECTION_NAMES","names":["big_table_1000K","big_table_100k","big_table_10K","big_table_15000K"]}
+{"section":"TARGET_EXISTENCE","scale":"10K","expectedName":"big_table_10K","exists":true}
+{"section":"INDEXES","scale":"10K","name":"big_table_10K","indexes":[{"v":2,"key":{"_id":1},"name":"_id_"}]}
+{"section":"COLLECTION_STATS","scale":"10K","name":"big_table_10K","dataSizeBytes":3525350,"storageSizeBytes":581632,"indexSizesBytes":{"_id_":143360}}
+{"section":"PREDICATE_COUNTS","scale":"10K","name":"big_table_10K","totalDocuments":10000,"objectId100To500":332,"sysTable":1125,"temporaryY":51}
+{"section":"FIELD_TYPES","scale":"10K","name":"big_table_10K","groups":[{"_id":{"ID":"int","OBJECT_ID":"int","OWNER":"string","OBJECT_TYPE":"string","TEMPORARY":"string"},"documents":10000}]}
+{"section":"SAMPLE_IDS","scale":"10K","name":"big_table_10K","rows":[{"ID":1,"OWNER":"SYS","OBJECT_ID":16,"OBJECT_TYPE":"TABLE","TEMPORARY":"N"},{"ID":5000,"OWNER":"PUBLIC","OBJECT_ID":5386,"OBJECT_TYPE":"SYNONYM","TEMPORARY":"N"},{"ID":10000,"OWNER":"SYS","OBJECT_ID":10808,"OBJECT_TYPE":"VIEW","TEMPORARY":"N"}]}
+{"section":"TARGET_EXISTENCE","scale":"100K","expectedName":"big_table_100k","exists":true}
+{"section":"INDEXES","scale":"100K","name":"big_table_100k","indexes":[{"v":2,"key":{"_id":1},"name":"_id_"},{"v":2,"key":{"TEMPORARY":1},"name":"TEMPORARY_1","partialFilterExpression":{"TEMPORARY":"Y"}}]}
+{"section":"COLLECTION_STATS","scale":"100K","name":"big_table_100k","dataSizeBytes":36558917,"storageSizeBytes":5201920,"indexSizesBytes":{"_id_":1019904,"TEMPORARY_1":20480}}
+{"section":"PREDICATE_COUNTS","scale":"100K","name":"big_table_100k","totalDocuments":100000,"objectId100To500":664,"sysTable":3405,"temporaryY":254}
+{"section":"FIELD_TYPES","scale":"100K","name":"big_table_100k","groups":[{"_id":{"ID":"int","OBJECT_ID":"int","OWNER":"string","OBJECT_TYPE":"string","TEMPORARY":"string"},"documents":100000}]}
+{"section":"SAMPLE_IDS","scale":"100K","name":"big_table_100k","rows":[{"ID":1,"OWNER":"SYS","OBJECT_ID":16,"OBJECT_TYPE":"TABLE","TEMPORARY":"N"},{"ID":5000,"OWNER":"PUBLIC","OBJECT_ID":5386,"OBJECT_TYPE":"SYNONYM","TEMPORARY":"N"},{"ID":10000,"OWNER":"SYS","OBJECT_ID":10808,"OBJECT_TYPE":"VIEW","TEMPORARY":"N"},{"ID":100000,"OWNER":"SYS","OBJECT_ID":34177,"OBJECT_TYPE":"JAVA CLASS","TEMPORARY":"N"}]}
+{"section":"TARGET_EXISTENCE","scale":"1000K","expectedName":"big_table_1000K","exists":true}
+{"section":"INDEXES","scale":"1000K","name":"big_table_1000K","indexes":[{"v":2,"key":{"_id":1},"name":"_id_"},{"v":2,"key":{"TEMPORARY":1},"name":"TEMPORARY_1","partialFilterExpression":{"TEMPORARY":"Y"}}]}
+{"section":"COLLECTION_STATS","scale":"1000K","name":"big_table_1000K","dataSizeBytes":368563480,"storageSizeBytes":52027392,"indexSizesBytes":{"_id_":10760192,"TEMPORARY_1":32768}}
+{"section":"PREDICATE_COUNTS","scale":"1000K","name":"big_table_1000K","totalDocuments":1000000,"objectId100To500":4980,"sysTable":25405,"temporaryY":2405}
+{"section":"FIELD_TYPES","scale":"1000K","name":"big_table_1000K","groups":[{"_id":{"ID":"int","OBJECT_ID":"int","OWNER":"string","OBJECT_TYPE":"string","TEMPORARY":"string"},"documents":1000000}]}
+{"section":"SAMPLE_IDS","scale":"1000K","name":"big_table_1000K","rows":[{"ID":1,"OWNER":"SYS","OBJECT_ID":16,"OBJECT_TYPE":"TABLE","TEMPORARY":"N"},{"ID":5000,"OWNER":"PUBLIC","OBJECT_ID":5386,"OBJECT_TYPE":"SYNONYM","TEMPORARY":"N"},{"ID":10000,"OWNER":"SYS","OBJECT_ID":10808,"OBJECT_TYPE":"VIEW","TEMPORARY":"N"},{"ID":100000,"OWNER":"SYS","OBJECT_ID":34177,"OBJECT_TYPE":"JAVA CLASS","TEMPORARY":"N"},{"ID":1000000,"OWNER":"SYS","OBJECT_ID":19192,"OBJECT_TYPE":"VIEW","TEMPORARY":"N"}]}
+{"section":"TARGET_EXISTENCE","scale":"15000K","expectedName":"big_table_15000K","exists":true}
+{"section":"INDEXES","scale":"15000K","name":"big_table_15000K","indexes":[{"v":2,"key":{"_id":1},"name":"_id_"},{"v":2,"key":{"TEMPORARY":1},"name":"TEMPORARY_1","partialFilterExpression":{"TEMPORARY":"Y"}}]}
+{"section":"COLLECTION_STATS","scale":"15000K","name":"big_table_15000K","dataSizeBytes":5535224980,"storageSizeBytes":803373056,"indexSizesBytes":{"_id_":165347328,"TEMPORARY_1":225280}}
+{"section":"METADATA_COUNT","scale":"15000K","name":"big_table_15000K","estimatedDocuments":15000000,"status":"ESTIMATE_ONLY; optional 15M exact scan skipped"}
+{"section":"INDEX_CREATE_PERMISSION","status":"NOT_VERIFIED_READ_ONLY","note":"Phase 2 must check permissions on disposable benchmark copies before DDL."}

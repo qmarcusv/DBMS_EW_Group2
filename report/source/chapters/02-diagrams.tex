@@ -1,0 +1,80 @@
+% Small access-path sketches. Boxes represent stored records or operations, not timing claims.
+\tikzset{record/.style={draw=blue!65!black,fill=blue!5,rounded corners=2pt,inner sep=5pt,font=\footnotesize,align=center},
+  chosen/.style={record,fill=green!12,draw=green!50!black},
+  excluded/.style={record,fill=red!8,draw=red!55!black},
+  flow/.style={-{Stealth[length=2mm]},thick,blue!65!black}}
+
+\newcommand{\UCOneDiagram}{%
+\begin{figure}[H]\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[record] at (1.6,1.55) {\texttt{CTXSYS | INDEX | 19}};
+\node[chosen] at (1.6,0.85) {\texttt{CTXSYS | TABLE | 12}};
+\node[record] at (1.6,0.15) {\texttt{SYS | INDEX | 8}};
+\node[chosen] at (1.6,-0.55) {\texttt{SYS | TABLE | 16}};
+\node[record] (prefix) at (7,1.4) {\textbf{Leading prefix}\\\texttt{OWNER=CTXSYS}\\read TYPE, ID in order};
+\node[chosen] (full) at (7,-0.15) {\textbf{Full key}\\\texttt{SYS, TABLE, 16}\\one narrow range};
+\node[excluded] at (7,-1.55) {\textbf{Missing OWNER}\\TABLE entries occur in many owner ranges};
+\draw[flow] (3.1,0.85) -- (prefix.west); \draw[flow] (3.1,-0.55) -- (full.west);
+\end{tikzpicture}
+\caption{UC1: lexicographically ordered compound keys. A leading owner narrows the range; trailing keys already supply the sort order. Missing the owner prevents one contiguous seek.}\label{fig:diag-uc1}
+\end{figure}}
+
+\newcommand{\UCTwoDiagram}{%
+\begin{figure}[H]\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[record,minimum width=3.4cm] (base) at (0,0) {Base rows\\\texttt{N  N  Y  N  Y  N}};
+\node[record,minimum width=3.4cm] (full) at (5,0.95) {Full index B\\\texttt{N  N  N  N  Y  Y}};
+\node[chosen,minimum width=3.4cm] (part) at (5,-0.95) {Filtered index C\\\texttt{Y  Y}};
+\draw[flow] (base.north east) -- ++(0.55,0) |- (full.west);
+\draw[flow] (base.south east) -- ++(0.55,0) |- (part.west);
+\end{tikzpicture}
+\caption{UC2: B stores every row; C stores only Y rows. A query for N cannot use C as a complete access path.}\label{fig:diag-uc2}
+\end{figure}}
+
+\newcommand{\UCThreeDiagram}{%
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=5mm and 8mm]
+\node[record] (n) {Narrow B\\\texttt{OBJECT\_ID + pointer}};
+\node[excluded,right=of n] (lookup) {Base-table lookup\\once per matching row};
+\node[record,right=of lookup] (result) {Projected result};
+\node[chosen,below=9mm of n] (c) {Covering C\\\texttt{OBJECT\_ID + output columns}};
+\draw[flow] (n) -- (lookup); \draw[flow] (lookup) -- (result);
+\draw[flow] (c.east) -- ++(6.3,0) |- (result.south);
+\draw[red!60!black,thick] (lookup.south west) -- (lookup.north east);
+\end{tikzpicture}
+\caption{UC3: C stores the projected columns and bypasses repeated base-row lookup. Wider entries increase index size.}\label{fig:diag-uc3}
+\end{figure}}
+
+\newcommand{\UCFourDiagram}{%
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=5mm and 8mm]
+\node[record] (doc) {Article BODY\\\emph{climate change is urgent}};
+\node[record,right=of doc] (tok) {Tokenization\\\texttt{climate | change | urgent}};
+\node[chosen,right=of tok] (post) {Posting lists\\\texttt{climate} $\to$ IDs 12, 89\\\texttt{change} $\to$ IDs 12, 91};
+\node[record,right=of post] (ids) {Candidate IDs\\phrase check if needed};
+\draw[flow] (doc) -- (tok); \draw[flow] (tok) -- (post); \draw[flow] (post) -- (ids);
+\end{tikzpicture}
+\caption{UC4: an inverted index maps words to document IDs. Substring scans inspect characters; linguistic search uses token boundaries, so their ID sets can differ.}\label{fig:diag-uc4}
+\end{figure}}
+
+\newcommand{\UCFiveDiagram}{%
+\begin{figure}[H]\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[record,minimum width=3.5cm] (row) at (0,0.9) {Rowstore B\\\texttt{[TYPE, ID, OWNER, ...]}\\\texttt{[TYPE, ID, OWNER, ...]}};
+\node[chosen,minimum width=3.5cm] (col) at (0,-0.9) {Columnstore C\\\textbf{TYPE:} \texttt{TABLE, VIEW, ...}\\\textbf{ID:} \texttt{16, 17, ...}\\OWNER: \texttt{SYS, SYS, ...}};
+\node[chosen,minimum width=2.6cm] (agg) at (6,-0.9) {\texttt{GROUP BY TYPE}\\\texttt{SUM(ID)}};
+\draw[flow] (col.east) -- node[above=2mm,font=\scriptsize]{two segments} (agg.west);
+\end{tikzpicture}
+\caption{UC5: C groups and compresses values by column. This aggregation reads TYPE and ID segments; a point predicate without a B-tree still scans.}\label{fig:diag-uc5}
+\end{figure}}
+
+\newcommand{\UCSixDiagram}{%
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=6mm and 10mm]
+\node[record] (doc) {Document 127\\\texttt{tags=[owner:SYS,}\\\texttt{type:TABLE, temporary:Y]}};
+\node[chosen,right=of doc] (entries) {Multikey entries\\\texttt{owner:SYS $\to$ 127}\\\texttt{type:TABLE $\to$ 127}\\\texttt{temporary:Y $\to$ 127}};
+\node[record,right=of entries] (fetch) {Two-tag query\\seek selective tag\\FETCH document\\check second tag};
+\draw[flow] (doc) -- (entries); \draw[flow] (entries) -- (fetch);
+\end{tikzpicture}
+\caption{UC6: one array yields several index entries. A two-tag query may seek one entry then fetch the document to verify the second tag.}\label{fig:diag-uc6}
+\end{figure}}

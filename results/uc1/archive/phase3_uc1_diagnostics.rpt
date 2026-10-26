@@ -1,0 +1,300 @@
+﻿section     configuration query_id note
+----------- ------------- -------- -----------------------------------------------------------
+PLAN_MARKER A             U1a      Next XML result and IO/TIME messages belong to this marker.
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 5 ms.
+Table 'UC1_Bench_100K'. Scan count 1, logical reads 2732, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Microsoft SQL Server 2005 XML Showplan
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1145.4"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT @payload=(SELECT [ID],[OWNER],[OBJECT_TYPE],[OBJECT_ID]&#xa; FROM dbo.UC1_B
+
+
+ SQL Server Execution Times:
+   CPU time = 31 ms,  elapsed time = 36 ms.
+
+ SQL Server Execution Times:
+   CPU time = 31 ms,  elapsed time = 42 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+section     configuration query_id note
+----------- ------------- -------- -----------------------------------------------------------
+PLAN_MARKER A             U1b      Next XML result and IO/TIME messages belong to this marker.
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 5 ms.
+Table 'UC1_Bench_100K'. Scan count 1, logical reads 2732, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Microsoft SQL Server 2005 XML Showplan
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1145.4"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT @payload=(SELECT [ID],[OWNER],[OBJECT_TYPE],[OBJECT_ID]&#xa; FROM dbo.UC1_B
+
+
+ SQL Server Execution Times:
+   CPU time = 63 ms,  elapsed time = 67 ms.
+
+ SQL Server Execution Times:
+   CPU time = 63 ms,  elapsed time = 72 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+section     configuration query_id note
+----------- ------------- -------- -----------------------------------------------------------
+PLAN_MARKER A             U1c      Next XML result and IO/TIME messages belong to this marker.
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 6 ms.
+Table 'UC1_Bench_100K'. Scan count 1, logical reads 2732, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Microsoft SQL Server 2005 XML Showplan
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1145.4"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT @payload=(SELECT [ID],[OWNER],[OBJECT_TYPE],[OBJECT_ID]&#xa; FROM dbo.UC1_B
+
+
+ SQL Server Execution Times:
+   CPU time = 31 ms,  elapsed time = 36 ms.
+
+ SQL Server Execution Times:
+   CPU time = 31 ms,  elapsed time = 43 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+section     configuration query_id note
+----------- ------------- -------- -----------------------------------------------------------
+PLAN_MARKER A             U1d      Next XML result and IO/TIME messages belong to this marker.
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 4 ms, elapsed time = 4 ms.
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'UC1_Bench_100K'. Scan count 1, logical reads 2732, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Microsoft SQL Server 2005 XML Showplan
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1145.4"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT @payload=(SELECT [ID],[OWNER],[OBJECT_TYPE],[OBJECT_ID]&#xa; FROM dbo.UC1_B
+
+
+ SQL Server Execution Times:
+   CPU time = 31 ms,  elapsed time = 43 ms.
+
+ SQL Server Execution Times:
+   CPU time = 47 ms,  elapsed time = 48 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+section     configuration query_id note
+----------- ------------- -------- -----------------------------------------------------------
+PLAN_MARKER B             U1a      Next XML result and IO/TIME messages belong to this marker.
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 2 ms.
+Table 'UC1_Bench_100K'. Scan count 1, logical reads 2732, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Microsoft SQL Server 2005 XML Showplan
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1145.4"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT @payload=(SELECT [ID],[OWNER],[OBJECT_TYPE],[OBJECT_ID]&#xa; FROM dbo.UC1_B
+
+
+ SQL Server Execution Times:
+   CPU time = 16 ms,  elapsed time = 24 ms.
+
+ SQL Server Execution Times:
+   CPU time = 16 ms,  elapsed time = 27 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+section     configuration query_id note
+----------- ------------- -------- -----------------------------------------------------------
+PLAN_MARKER B             U1b      Next XML result and IO/TIME messages belong to this marker.
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 3 ms, elapsed time = 3 ms.
+Table 'UC1_Bench_100K'. Scan count 1, logical reads 2732, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Microsoft SQL Server 2005 XML Showplan
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1145.4"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT @payload=(SELECT [ID],[OWNER],[OBJECT_TYPE],[OBJECT_ID]&#xa; FROM dbo.UC1_B
+
+
+ SQL Server Execution Times:
+   CPU time = 16 ms,  elapsed time = 29 ms.
+
+ SQL Server Execution Times:
+   CPU time = 31 ms,  elapsed time = 32 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+section     configuration query_id note
+----------- ------------- -------- -----------------------------------------------------------
+PLAN_MARKER B             U1c      Next XML result and IO/TIME messages belong to this marker.
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 2 ms.
+Table 'UC1_Bench_100K'. Scan count 1, logical reads 2732, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Microsoft SQL Server 2005 XML Showplan
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1145.4"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT @payload=(SELECT [ID],[OWNER],[OBJECT_TYPE],[OBJECT_ID]&#xa; FROM dbo.UC1_B
+
+
+ SQL Server Execution Times:
+   CPU time = 16 ms,  elapsed time = 17 ms.
+
+ SQL Server Execution Times:
+   CPU time = 16 ms,  elapsed time = 20 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+section     configuration query_id note
+----------- ------------- -------- -----------------------------------------------------------
+PLAN_MARKER B             U1d      Next XML result and IO/TIME messages belong to this marker.
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 5 ms.
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'UC1_Bench_100K'. Scan count 1, logical reads 403, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Microsoft SQL Server 2005 XML Showplan
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1145.4"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT @payload=(SELECT [ID],[OWNER],[OBJECT_TYPE],[OBJECT_ID]&#xa; FROM dbo.UC1_B
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 11 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 17 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+section     configuration query_id note
+----------- ------------- -------- -----------------------------------------------------------
+PLAN_MARKER C             U1a      Next XML result and IO/TIME messages belong to this marker.
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 5 ms, elapsed time = 5 ms.
+Table 'UC1_Bench_100K'. Scan count 1, logical reads 5, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Microsoft SQL Server 2005 XML Showplan
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1145.4"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT @payload=(SELECT [ID],[OWNER],[OBJECT_TYPE],[OBJECT_ID]&#xa; FROM dbo.UC1_B
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 10 ms.
+
+ SQL Server Execution Times:
+   CPU time = 16 ms,  elapsed time = 16 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+section     configuration query_id note
+----------- ------------- -------- -----------------------------------------------------------
+PLAN_MARKER C             U1b      Next XML result and IO/TIME messages belong to this marker.
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 7 ms, elapsed time = 7 ms.
+Table 'UC1_Bench_100K'. Scan count 1, logical reads 2732, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Microsoft SQL Server 2005 XML Showplan
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1145.4"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT @payload=(SELECT [ID],[OWNER],[OBJECT_TYPE],[OBJECT_ID]&#xa; FROM dbo.UC1_B
+
+
+ SQL Server Execution Times:
+   CPU time = 63 ms,  elapsed time = 63 ms.
+
+ SQL Server Execution Times:
+   CPU time = 78 ms,  elapsed time = 70 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+section     configuration query_id note
+----------- ------------- -------- -----------------------------------------------------------
+PLAN_MARKER C             U1c      Next XML result and IO/TIME messages belong to this marker.
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 6 ms.
+Table 'UC1_Bench_100K'. Scan count 1, logical reads 657, physical reads 0, page server reads 0, read-ahead reads 7, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Microsoft SQL Server 2005 XML Showplan
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1145.4"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT @payload=(SELECT [ID],[OWNER],[OBJECT_TYPE],[OBJECT_ID]&#xa; FROM dbo.UC1_B
+
+
+ SQL Server Execution Times:
+   CPU time = 31 ms,  elapsed time = 25 ms.
+
+ SQL Server Execution Times:
+   CPU time = 31 ms,  elapsed time = 32 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+section     configuration query_id note
+----------- ------------- -------- -----------------------------------------------------------
+PLAN_MARKER C             U1d      Next XML result and IO/TIME messages belong to this marker.
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+SQL Server parse and compile time: 
+   CPU time = 6 ms, elapsed time = 6 ms.
+Table 'UC1_Bench_100K'. Scan count 1, logical reads 405, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Microsoft SQL Server 2005 XML Showplan
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1145.4"><BatchSequence><Batch><Statements><StmtSimple StatementText="SELECT @payload=(SELECT [ID],[OWNER],[OBJECT_TYPE],[OBJECT_ID]&#xa; FROM dbo.UC1_B
+
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 14 ms.
+
+ SQL Server Execution Times:
+   CPU time = 16 ms,  elapsed time = 20 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+section              note
+-------------------- ----------------------------------------
+DIAGNOSTICS_COMPLETE 12 plan markers emitted; copy left in C.
+
+
+Completion time: 2026-10-24T15:10:42.7291791+07:00

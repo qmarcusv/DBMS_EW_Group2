@@ -1,0 +1,15 @@
+{
+  "dataset_id": "genesisqu/fake-real-news",
+  "source_revision": "9cca94a438905a40883b71c3b5f91c9673b6eec9",
+  "selection": "5000 nonblank BODY rows per source CSV, smallest SHA256(name:1-based-row)",
+  "rows": 10000,
+  "rows_per_source": {
+    "Fake.csv": 5000,
+    "True.csv": 5000
+  },
+  "jsonl_sha256": "2f09bc3aef865ccc85cc80eba9cc9104aae2af8fa9e81cb845dadc345fd8dd97",
+  "source_sha256": {
+    "Fake.csv": "bebf8bcfe95678bf2c732bf413a2ce5f621af0102c82bf08083b2e5d3c693d0c",
+    "True.csv": "ba0844414a65dc6ae7402b8eee5306da24b6b56488d6767135af466c7dcb2775"
+  }
+}

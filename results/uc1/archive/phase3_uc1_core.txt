@@ -1,0 +1,4 @@
+﻿section    database_name                                                                                                                    session_id sample_table_object_id note
+---------- -------------------------------------------------------------------------------------------------------------------------------- ---------- ---------------------- ------------------------------------------------------------------
+CORE_READY DBMS_EW_Group02                                                                                                                  68         -1083796587            Run benchmark_smoke.sql in this exact query window and connection.
+

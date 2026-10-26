@@ -1,0 +1,17 @@
+{
+  "dataset_id": "BIG_TABLE_1K",
+  "validation_csv_sha256": "0ccc54a62854aa02535c45ee33ae96d6d7478f855ce44fa69e252a5a930b939f",
+  "mongo_database": "dbms_ew_group02",
+  "mongo_collection": "big_table_1k",
+  "server_version": "7.0.12",
+  "document_mapping": "14 source fields + _dataset_id + _source_row_number; dates as BSON UTC wall-clock values",
+  "document_count": 1000,
+  "sample_rows": [
+    1,
+    500,
+    1000
+  ],
+  "sample_values_match_csv": true,
+  "loaded_at_local": "2026-10-05T23:03:23.996377+07:00",
+  "status": "PASS"
+}

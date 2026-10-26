@@ -1,0 +1,13 @@
+Changed database context to 'DBMS_EW_Group02'.
+RUN_CONTEXT 55168B67-D852-40C0-8DB5-1B6A6D058844 Microsoft SQL Server 2025 (RTM-GDR) (KB5128492) - 17.0.1145.4 (X64) 
+	Oct  2 2026 17:45:24 
+	Copyright (C) 2025 Microsoft Corporation
+	Enterprise Developer Edition (64-bit) on Windows 10 Home 10.0 <X64> (Build 26220: ) (Hypervisor)
+ DBMS_EW_Group02
+COPY_READY Read A UC6_Read_A_Parent UC6_Read_A_Tag 10000 30471
+COPY_READY Read C UC6_Read_C_Parent UC6_Read_C_Tag 10000 30471
+COPY_READY Write A UC6_Write_A_Parent UC6_Write_A_Tag 10000 30471
+COPY_READY Write C UC6_Write_C_Parent UC6_Write_C_Tag 10000 30471
+INDEX_BUILD Read C 173.917 1359872
+INDEX_BUILD Write C 241.228 1359872
+SETUP_COMPLETE PASS

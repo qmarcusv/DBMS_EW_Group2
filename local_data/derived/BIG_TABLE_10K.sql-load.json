@@ -1,0 +1,92 @@
+{
+  "dataset_id": "BIG_TABLE_10K",
+  "validation_csv_sha256": "7f41f9d5a36b932a25101cc8929aad540a3f9f76ae68b5d434a221b7d6d4f116",
+  "sql_target": "dbo.BIG_TABLE",
+  "database": "DBMS_EW_Group02",
+  "row_count": 10000,
+  "server_version": "17.0.1000.7",
+  "column_mapping": [
+    {
+      "source": "ID",
+      "target": "ID",
+      "type": "BIGINT NULL"
+    },
+    {
+      "source": "OWNER",
+      "target": "OWNER",
+      "type": "NVARCHAR(128) NULL"
+    },
+    {
+      "source": "OBJECT_NAME",
+      "target": "OBJECT_NAME",
+      "type": "NVARCHAR(256) NULL"
+    },
+    {
+      "source": "SUBOBJECT_NAME",
+      "target": "SUBOBJECT_NAME",
+      "type": "NVARCHAR(256) NULL"
+    },
+    {
+      "source": "OBJECT_ID",
+      "target": "OBJECT_ID",
+      "type": "BIGINT NULL"
+    },
+    {
+      "source": "DATA_OBJECT_ID",
+      "target": "DATA_OBJECT_ID",
+      "type": "BIGINT NULL"
+    },
+    {
+      "source": "OBJECT_TYPE",
+      "target": "OBJECT_TYPE",
+      "type": "NVARCHAR(64) NULL"
+    },
+    {
+      "source": "CREATED",
+      "target": "CREATED",
+      "type": "DATETIME2(0) NULL"
+    },
+    {
+      "source": "LAST_DDL_TIME",
+      "target": "LAST_DDL_TIME",
+      "type": "DATETIME2(0) NULL"
+    },
+    {
+      "source": "TIMESTAMP",
+      "target": "TIMESTAMP",
+      "type": "NVARCHAR(32) NULL"
+    },
+    {
+      "source": "STATUS",
+      "target": "STATUS",
+      "type": "NVARCHAR(32) NULL"
+    },
+    {
+      "source": "TEMPORARY",
+      "target": "TEMPORARY",
+      "type": "NCHAR(1) NULL"
+    },
+    {
+      "source": "GENERATED",
+      "target": "GENERATED",
+      "type": "NCHAR(1) NULL"
+    },
+    {
+      "source": "SECONDARY",
+      "target": "SECONDARY",
+      "type": "NCHAR(1) NULL"
+    }
+  ],
+  "provenance_columns": [
+    "EW_DATASET_ID",
+    "SOURCE_ROW_NUMBER"
+  ],
+  "sample_rows": [
+    1,
+    5000,
+    10000
+  ],
+  "sample_values_match_csv": true,
+  "loaded_at_local": "2026-10-05T23:03:40.970884+07:00",
+  "status": "PASS"
+}

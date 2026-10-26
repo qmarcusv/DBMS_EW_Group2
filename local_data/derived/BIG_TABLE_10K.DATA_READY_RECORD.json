@@ -1,0 +1,297 @@
+{
+  "dataset_id": "BIG_TABLE_10K",
+  "core_dataset_id": "BIG_TABLE_10K",
+  "dataset_role": "core",
+  "source": {
+    "path": "W:\\MYSELF\\HCMUT-university\\Senior\\HK_261\\DBMS\\BTL\\DBMS_EW_Group02\\local_data\\source\\big table export.sql",
+    "size_bytes": 5705860718,
+    "mtime_ns": 1788421815000000000,
+    "sha256": null
+  },
+  "derived_csv": {
+    "path": "W:\\MYSELF\\HCMUT-university\\Senior\\HK_261\\DBMS\\BTL\\DBMS_EW_Group02\\local_data\\derived\\BIG_TABLE_10K.csv",
+    "sha256": "7f41f9d5a36b932a25101cc8929aad540a3f9f76ae68b5d434a221b7d6d4f116",
+    "columns": [
+      "ID",
+      "OWNER",
+      "OBJECT_NAME",
+      "SUBOBJECT_NAME",
+      "OBJECT_ID",
+      "DATA_OBJECT_ID",
+      "OBJECT_TYPE",
+      "CREATED",
+      "LAST_DDL_TIME",
+      "TIMESTAMP",
+      "STATUS",
+      "TEMPORARY",
+      "GENERATED",
+      "SECONDARY"
+    ],
+    "rows": 10000
+  },
+  "build": {
+    "dataset_id": "BIG_TABLE_10K",
+    "source_path": "W:\\MYSELF\\HCMUT-university\\Senior\\HK_261\\DBMS\\BTL\\DBMS_EW_Group02\\local_data\\source\\big table export.sql",
+    "source_size_bytes": 5705860718,
+    "source_mtime_ns": 1788421815000000000,
+    "source_sha256": null,
+    "source_sha256_note": "omitted to avoid re-reading the full multi-GB export",
+    "built_at_local": "2026-10-05T23:03:35.767308+07:00",
+    "python_version": "3.13.11",
+    "derived_csv": "W:\\MYSELF\\HCMUT-university\\Senior\\HK_261\\DBMS\\BTL\\DBMS_EW_Group02\\local_data\\derived\\BIG_TABLE_10K.csv",
+    "csv_sha256": "7f41f9d5a36b932a25101cc8929aad540a3f9f76ae68b5d434a221b7d6d4f116",
+    "requested_rows": 10000,
+    "parsed_rows": 10000,
+    "written_rows": 10000,
+    "skipped_rows": 0,
+    "error_rows": 0,
+    "first_error": null,
+    "columns": [
+      "ID",
+      "OWNER",
+      "OBJECT_NAME",
+      "SUBOBJECT_NAME",
+      "OBJECT_ID",
+      "DATA_OBJECT_ID",
+      "OBJECT_TYPE",
+      "CREATED",
+      "LAST_DDL_TIME",
+      "TIMESTAMP",
+      "STATUS",
+      "TEMPORARY",
+      "GENERATED",
+      "SECONDARY"
+    ],
+    "null_marker": "\\N",
+    "date_format": "%Y-%m-%dT%H:%M:%S",
+    "status": "PASS"
+  },
+  "validation": {
+    "dataset_id": "BIG_TABLE_10K",
+    "passed": true,
+    "checked_at_local": "2026-10-05T23:03:36.697810+07:00",
+    "csv_path": "W:\\MYSELF\\HCMUT-university\\Senior\\HK_261\\DBMS\\BTL\\DBMS_EW_Group02\\local_data\\derived\\BIG_TABLE_10K.csv",
+    "csv_sha256": "7f41f9d5a36b932a25101cc8929aad540a3f9f76ae68b5d434a221b7d6d4f116",
+    "source_path": "W:\\MYSELF\\HCMUT-university\\Senior\\HK_261\\DBMS\\BTL\\DBMS_EW_Group02\\local_data\\source\\big table export.sql",
+    "source_size_bytes": 5705860718,
+    "validation_errors": [],
+    "profile": {
+      "row_count": 10000,
+      "min_id": 1,
+      "max_id": 10000,
+      "distinct_owner": 6,
+      "distinct_object_type": 15,
+      "distinct_object_id": 10000,
+      "null_counts": {
+        "ID": 0,
+        "OWNER": 0,
+        "OBJECT_NAME": 0,
+        "SUBOBJECT_NAME": 9704,
+        "OBJECT_ID": 0,
+        "DATA_OBJECT_ID": 7403,
+        "OBJECT_TYPE": 0,
+        "CREATED": 0,
+        "LAST_DDL_TIME": 0,
+        "TIMESTAMP": 0,
+        "STATUS": 0,
+        "TEMPORARY": 0,
+        "GENERATED": 0,
+        "SECONDARY": 0
+      },
+      "samples": [
+        {
+          "row_number": 1,
+          "row": {
+            "ID": "1",
+            "OWNER": "SYS",
+            "OBJECT_NAME": "TS$",
+            "SUBOBJECT_NAME": "\\N",
+            "OBJECT_ID": "16",
+            "DATA_OBJECT_ID": "6",
+            "OBJECT_TYPE": "TABLE",
+            "CREATED": "2021-09-28T00:00:00",
+            "LAST_DDL_TIME": "2021-09-28T00:00:00",
+            "TIMESTAMP": "2021-09-28:04:31:15",
+            "STATUS": "VALID",
+            "TEMPORARY": "N",
+            "GENERATED": "N",
+            "SECONDARY": "N"
+          }
+        },
+        {
+          "row_number": 5000,
+          "row": {
+            "ID": "5000",
+            "OWNER": "PUBLIC",
+            "OBJECT_NAME": "USER_PART_INDEXES",
+            "SUBOBJECT_NAME": "\\N",
+            "OBJECT_ID": "5386",
+            "DATA_OBJECT_ID": "\\N",
+            "OBJECT_TYPE": "SYNONYM",
+            "CREATED": "2021-09-28T00:00:00",
+            "LAST_DDL_TIME": "2021-09-28T00:00:00",
+            "TIMESTAMP": "2021-09-28:04:36:37",
+            "STATUS": "VALID",
+            "TEMPORARY": "N",
+            "GENERATED": "N",
+            "SECONDARY": "N"
+          }
+        },
+        {
+          "row_number": 10000,
+          "row": {
+            "ID": "10000",
+            "OWNER": "SYS",
+            "OBJECT_NAME": "DBA_JOINGROUPS",
+            "SUBOBJECT_NAME": "\\N",
+            "OBJECT_ID": "10808",
+            "DATA_OBJECT_ID": "\\N",
+            "OBJECT_TYPE": "VIEW",
+            "CREATED": "2021-09-28T00:00:00",
+            "LAST_DDL_TIME": "2021-09-28T00:00:00",
+            "TIMESTAMP": "2021-09-28:04:39:59",
+            "STATUS": "VALID",
+            "TEMPORARY": "N",
+            "GENERATED": "N",
+            "SECONDARY": "N"
+          }
+        }
+      ],
+      "source_sample_checks": [
+        {
+          "row_number": 1,
+          "matches_oracle_source": true
+        },
+        {
+          "row_number": 5000,
+          "matches_oracle_source": true
+        },
+        {
+          "row_number": 10000,
+          "matches_oracle_source": true
+        }
+      ]
+    }
+  },
+  "sql_server": {
+    "dataset_id": "BIG_TABLE_10K",
+    "validation_csv_sha256": "7f41f9d5a36b932a25101cc8929aad540a3f9f76ae68b5d434a221b7d6d4f116",
+    "sql_target": "dbo.BIG_TABLE",
+    "database": "DBMS_EW_Group02",
+    "row_count": 10000,
+    "server_version": "17.0.1000.7",
+    "column_mapping": [
+      {
+        "source": "ID",
+        "target": "ID",
+        "type": "BIGINT NULL"
+      },
+      {
+        "source": "OWNER",
+        "target": "OWNER",
+        "type": "NVARCHAR(128) NULL"
+      },
+      {
+        "source": "OBJECT_NAME",
+        "target": "OBJECT_NAME",
+        "type": "NVARCHAR(256) NULL"
+      },
+      {
+        "source": "SUBOBJECT_NAME",
+        "target": "SUBOBJECT_NAME",
+        "type": "NVARCHAR(256) NULL"
+      },
+      {
+        "source": "OBJECT_ID",
+        "target": "OBJECT_ID",
+        "type": "BIGINT NULL"
+      },
+      {
+        "source": "DATA_OBJECT_ID",
+        "target": "DATA_OBJECT_ID",
+        "type": "BIGINT NULL"
+      },
+      {
+        "source": "OBJECT_TYPE",
+        "target": "OBJECT_TYPE",
+        "type": "NVARCHAR(64) NULL"
+      },
+      {
+        "source": "CREATED",
+        "target": "CREATED",
+        "type": "DATETIME2(0) NULL"
+      },
+      {
+        "source": "LAST_DDL_TIME",
+        "target": "LAST_DDL_TIME",
+        "type": "DATETIME2(0) NULL"
+      },
+      {
+        "source": "TIMESTAMP",
+        "target": "TIMESTAMP",
+        "type": "NVARCHAR(32) NULL"
+      },
+      {
+        "source": "STATUS",
+        "target": "STATUS",
+        "type": "NVARCHAR(32) NULL"
+      },
+      {
+        "source": "TEMPORARY",
+        "target": "TEMPORARY",
+        "type": "NCHAR(1) NULL"
+      },
+      {
+        "source": "GENERATED",
+        "target": "GENERATED",
+        "type": "NCHAR(1) NULL"
+      },
+      {
+        "source": "SECONDARY",
+        "target": "SECONDARY",
+        "type": "NCHAR(1) NULL"
+      }
+    ],
+    "provenance_columns": [
+      "EW_DATASET_ID",
+      "SOURCE_ROW_NUMBER"
+    ],
+    "sample_rows": [
+      1,
+      5000,
+      10000
+    ],
+    "sample_values_match_csv": true,
+    "loaded_at_local": "2026-10-05T23:03:40.970884+07:00",
+    "status": "PASS"
+  },
+  "mongodb": {
+    "dataset_id": "BIG_TABLE_10K",
+    "validation_csv_sha256": "7f41f9d5a36b932a25101cc8929aad540a3f9f76ae68b5d434a221b7d6d4f116",
+    "mongo_database": "dbms_ew_group02",
+    "mongo_collection": "big_table_10k",
+    "server_version": "7.0.12",
+    "document_mapping": "14 source fields + _dataset_id + _source_row_number; dates as BSON UTC wall-clock values",
+    "document_count": 10000,
+    "sample_rows": [
+      1,
+      5000,
+      10000
+    ],
+    "sample_values_match_csv": true,
+    "loaded_at_local": "2026-10-05T23:03:41.924217+07:00",
+    "status": "PASS"
+  },
+  "checks": {
+    "build": true,
+    "validation": true,
+    "sql": true,
+    "mongo": true
+  },
+  "environment": {
+    "python": "3.14.6",
+    "platform": "Windows-11-10.0.26220-SP0",
+    "recorded_at_local": "2026-10-06T00:18:35.053618+07:00"
+  },
+  "overall_status": "PASS"
+}

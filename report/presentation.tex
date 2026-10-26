@@ -1,0 +1,831 @@
+\documentclass[aspectratio=169,9pt]{beamer}
+
+% Theme and Colors
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+\definecolor{hcmutblue}{RGB}{0, 51, 102}
+\definecolor{accentblue}{RGB}{37, 99, 235}
+\definecolor{darkslate}{RGB}{30, 41, 59}
+\definecolor{cardbg}{RGB}{241, 245, 249}
+
+\setbeamercolor{palette primary}{bg=hcmutblue,fg=white}
+\setbeamercolor{palette secondary}{bg=accentblue,fg=white}
+\setbeamercolor{palette tertiary}{bg=hcmutblue!90,fg=white}
+\setbeamercolor{titlelike}{bg=hcmutblue,fg=white}
+\setbeamercolor{structure}{fg=hcmutblue}
+\setbeamercolor{block title}{bg=hcmutblue,fg=white}
+\setbeamercolor{block body}{bg=cardbg,fg=darkslate}
+\setbeamercolor{block title example}{bg=accentblue,fg=white}
+\setbeamercolor{block body example}{bg=cardbg,fg=darkslate}
+\setbeamercolor{block title alert}{bg=red!80!black,fg=white}
+\setbeamercolor{block body alert}{bg=red!5!white,fg=darkslate}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{microtype}
+\usepackage{pifont}
+
+% Footer configuration
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}CO3021 Group 02 (HCMUT)
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}CO3021 $\cdot$ Group 02 | Other Indexing Structures
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \usebeamerfont{date in head/foot}Tháng 10/2026\hspace*{2em}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+% Title Metadata
+\title[Other Indexing Structures]{\textbf{Other Indexing Structures and Indexes in Today's DBMSs}}
+\subtitle{Nghiên cứu Thực nghiệm theo Workload trên Microsoft SQL Server 2025 \& MongoDB 7.0}
+\author[Nhóm 02]{Nhóm 02 --- Giảng viên hướng dẫn: TS. Phan Trọng Nhân}
+\institute[HCMUT]{Trường Đại học Bách khoa TP.HCM --- Khoa Khoa học \& Kỹ thuật Máy tính}
+\date{Tháng 10/2026}
+
+\begin{document}
+
+% -----------------------------------------------------------------------------
+% SLIDE 1: TITLE SLIDE
+% -----------------------------------------------------------------------------
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 2: GROUP ROSTER & RESPONSIBILITIES
+% -----------------------------------------------------------------------------
+\begin{frame}{Danh Sách Thành Viên \& Phân Công Nhiệm Vụ}
+\begin{table}
+\centering\footnotesize
+\begin{tabularx}{\linewidth}{@{}l l X@{}}
+\toprule
+\textbf{MSSV} & \textbf{Họ và Tên} & \textbf{Trách nhiệm và Phân công chính trong đồ án} \\
+\midrule
+2252396 & Nguyễn Trung Kiên & Trưởng nhóm, kiến trúc tổng thể, benchmark UC1 Compound B-Tree \\
+2353196 & Triệu Thuận Toàn & Thực nghiệm UC2 Filtered / Partial Index trên SQL/MongoDB \\
+2352988 & Hồ Lê Minh Quân & Thực nghiệm UC3 Covering Index (INCLUDE vs Compound Keys) \\
+2352608 & Huỳnh Minh Khởi & Thực nghiệm UC4 Full-Text / Text Search \& Inverted Index \\
+2212828 & Vũ Minh Quân & Thực nghiệm UC5 Clustered Columnstore Index (SQL Server 1M) \\
+2352951 & Lâm Thanh Phương & Thực nghiệm UC6 Multikey vs Normalized Child Index \\
+2352699 & Thái Thiên Hải Long & Thiết kế dữ liệu EDA, kiểm định toàn vẹn dữ liệu Phase 1/Phase 8 \\
+2352708 & Đinh Cao Thiên Lộc & Phân tích Actual Execution Plans và toán tử vật lý \\
+2352967 & Ngô Phương Quang & Đo lường chi phí ghi, build time và freshness delay \\
+2352758 & Phan Đức Minh & Xây dựng Web Demo Streamlit và báo cáo LaTeX V3 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 3: AGENDA
+% -----------------------------------------------------------------------------
+\begin{frame}{Nội Dung Báo Cáo Thuyết Trình}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{block}{Phần I: Đặt Vấn Đề \& Phương Pháp Luận}
+\begin{itemize}
+  \item \textbf{Chương 1:} 3 Câu hỏi cốt lõi \& Phân loại chỉ mục
+  \item \textbf{Chương 2:} Thiết kế 6 Use Case theo hướng Workload-first
+  \item \textbf{Chương 3:} 3 Bộ dữ liệu EDA \& 5 Quy chuẩn đo lường
+\end{itemize}
+\end{block}
+\begin{block}{Phần II: Kết Quả Thực Nghiệm Sáu Use Case}
+\begin{itemize}
+  \item \textbf{UC1:} Compound B-Tree Index (Lọc đa cột \& Sắp xếp)
+  \item \textbf{UC2:} Filtered / Partial Index (Dữ liệu lệch $0.24\%$)
+  \item \textbf{UC3:} Covering Index (Triệt tiêu RID/Doc Lookup)
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{block}{Phần II (tiếp): Các Cấu Trúc Khác B-Tree}
+\begin{itemize}
+  \item \textbf{UC4:} Full-Text / Inverted Index \& Bẫy ngữ nghĩa
+  \item \textbf{UC5:} Clustered Columnstore (Nén 23:1, Batch Mode)
+  \item \textbf{UC6:} Multikey vs. Normalized Child Index (Tags)
+\end{itemize}
+\end{block}
+\begin{block}{Phần III: Tổng Hợp \& Trực Quan Hóa}
+\begin{itemize}
+  \item \textbf{Chương 5:} Bảng Quyết Định Kỹ Thuật Tổng Hợp
+  \item \textbf{4 Cạm bẫy} phương pháp luận cần tránh
+  \item \textbf{Live Demo:} Giới thiệu Web Streamlit tương tác
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 4: CHAPTER 1 - PROBLEM & 3 CORE QUESTIONS
+% -----------------------------------------------------------------------------
+\begin{frame}{Vấn Đề Nghiên Cứu \& Ba Câu Hỏi Cốt Lõi}
+\begin{block}{Mục Tiêu Đồ Án Môn Học}
+Nghiên cứu các cấu trúc chỉ mục mở rộng \emph{ngoài slide lý thuyết} và các phép đánh chỉ mục hiện đại trong DBMS thực tế (Microsoft SQL Server 2025 \& MongoDB 7.0), trả lời dứt khoát 3 câu hỏi của giảng viên:
+\end{block}
+
+\begin{columns}[T]
+\begin{column}{0.32\textwidth}
+\begin{block}{\ding{182} What are they?}
+\footnotesize
+Các cấu trúc vật lý và kỹ thuật index này là gì? Bản chất lưu trữ trên đĩa, bộ nhớ đệm và cấu trúc dữ liệu bên dưới là gì?
+\end{block}
+\end{column}
+
+\begin{column}{0.32\textwidth}
+\begin{block}{\ding{183} How are they supported?}
+\footnotesize
+DBMS hiện thực và tối ưu hóa chúng như thế nào? (Plan cache, Seek predicate, Batch Mode, Background Catalog).
+\end{block}
+\end{column}
+
+\begin{column}{0.32\textwidth}
+\begin{alertblock}{\ding{184} How they support?}
+\footnotesize
+Chúng cải thiện hiệu năng cho \textbf{workload thực tế} nào? Đạt tốc độ bao nhiêu và phải trả giá bằng \textbf{đánh đổi gì}?
+\end{alertblock}
+\end{column}
+\end{columns}
+
+\vspace{0.4cm}
+\centering
+\textbf{\color{red!80!black}\ding{52} Tránh bẫy nghiên cứu: Không tạo index ``cho vui'', mọi index đều phải phục vụ một Use Case rõ ràng!}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 5: TAXONOMY - PHYSICAL STRUCTURES VS B-TREE TECHNIQUES
+% -----------------------------------------------------------------------------
+\begin{frame}{Phân Biệt Cấu Trúc Vật Lý vs. Kỹ Thuật Thiết Kế B-Tree}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{block}{Cấu Trúc Vật Lý Cơ Sở (Physical Storage)}
+Định nghĩa \textbf{cách thức tổ chức các byte trên đĩa/RAM}:
+\begin{itemize}
+  \item \textbf{Heap / Clustered Rowstore:} Tổ chức theo từng trang (Page 8KB trong SQL, WiredTiger pages trong MongoDB).
+  \item \textbf{Inverted Index (UC4):} Tách từ (Word Breaker), tạo bảng từ vựng (Lexicon) và Posting Lists trỏ tới tài liệu.
+  \item \textbf{Clustered Columnstore (UC5):} Chia bảng thành rowgroup, nén dữ liệu theo từng cột (Column Segment) với từ điển và RLE.
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{Kỹ Thuật Thiết Kế Trên Cây B-Tree}
+Khai thác \textbf{cấu trúc B-Tree sẵn có} để tối ưu đường truy cập:
+\begin{itemize}
+  \item \textbf{Compound B-Tree (UC1):} Ghép nhiều cột theo thứ tự từ điển; tối ưu lọc đa chiều và triệt tiêu toán tử Sort.
+  \item \textbf{Filtered / Partial Index (UC2):} B-Tree chỉ lưu trữ tập con bản ghi thỏa mãn biểu thức vị từ (Predicate).
+  \item \textbf{Covering Index (UC3):} Bổ sung cột phụ trợ vào trang lá (\texttt{INCLUDE} hoặc Compound) để triệt tiêu Base Lookups.
+  \item \textbf{Multikey Index (UC6):} Nhân bản các khóa trỏ cho từng phần tử trong mảng (NoSQL).
+\end{itemize}
+\end{exampleblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 6: DATASETS & EDA
+% -----------------------------------------------------------------------------
+\begin{frame}{Ba Bộ Dữ Liệu Thực Nghiệm \& Đặc Trưng EDA}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{block}{Ba Bộ Dữ Liệu Thực Nghiệm}
+\footnotesize
+\begin{itemize}
+  \item \textbf{BIG\_TABLE (100K \& 1M dòng):} 14 cột, kế thừa từ Oracle \texttt{ALL\_OBJECTS}. Dùng cho UC1, UC2, UC3, UC5.
+  \item \textbf{Corpus Tin Tức (10,000 bài báo):} Văn bản tiếng Anh thực tế (CNN/Reuters), cột \texttt{BODY} dài trung vị 371 từ (max 900+ từ). Dùng cho UC4 Full-Text.
+  \item \textbf{Corpus Mảng Tags (10,000 thực thể):} 30,471 quan hệ tag (mỗi doc 3--5 tags). Dùng cho UC6 Multikey.
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{Đặc Tính Phân Phối Dữ Liệu (EDA)}
+\footnotesize
+\begin{itemize}
+  \item \textbf{Độ lệch cực đoan (UC2):} Cột \texttt{TEMPORARY = 'Y'} chỉ chiếm đúng \textbf{$0.24\%$} (240 dòng ở 100K; 2,405 dòng ở 1M), $99.76\%$ là 'N'.
+  \item \textbf{Độ lệch cột lọc (UC1):} Cột \texttt{OWNER = 'SYS'} chiếm tới \textbf{$71.8\%$}, trong khi các giá trị khác rất thưa.
+  \item \textbf{Tính toàn vẹn (Integrity):} SHA-256 đối chiếu giữa SQL Server và MongoDB trùng khớp 100\% tập dữ liệu thô.
+\end{itemize}
+\end{exampleblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 7: FAIRNESS CONSTRAINTS & WORKFLOW
+% -----------------------------------------------------------------------------
+\begin{frame}{Năm Quy Chuẩn Thực Nghiệm Công Bằng (Fairness Rules)}
+\begin{block}{Quy Trình Đo Đạc \& Giám Sát Khoa Học}
+\begin{enumerate}
+  \item \textbf{Disposable Working Copies (Bản sao dùng một lần):} Mỗi thí nghiệm clone một bản sao sạch (\texttt{UC*\_Read} và \texttt{UC*\_Write}) và tước bỏ index cũ, đảm bảo các kịch bản ghi không làm sai lệch số dòng đọc.
+  \item \textbf{Warmups \& 25 Timed Runs:} Chạy 2 lần warmup không tính giờ, sau đó đo 25 lần timed runs, vật chất hóa toàn bộ dòng và lấy trung vị (p50) làm chỉ số chính; ghi nhận p95 để kiểm soát đuôi độ trễ.
+  \item \textbf{Separate Actual Execution Plan Capture (Bắt kế hoạch riêng biệt):} Không bật cờ trace trong lúc đo giờ; sau 25 lần đo mới chạy lượt chẩn đoán riêng (\texttt{SET STATISTICS IO, XML ON} trong SQL; \texttt{explain('executionStats')} trong MongoDB).
+  \item \textbf{Đo lường đa chiều: Storage, Build Time \& Write Maintenance:} Đo kích thước index trên đĩa (\texttt{sys.dm\_db\_partition\_stats} / \texttt{indexSizes}), thời gian build (ms), thông lượng batch INSERT (rows/s) và độ trễ UPDATE.
+  \item \textbf{Strict Intra-DBMS Comparison Rule (Chỉ so sánh nội bộ cùng DBMS):} SQL Server dùng server-side batch timer; MongoDB đo client cursor. Tuyệt đối chỉ so sánh A vs B vs C trong cùng DBMS, không so ms chéo giữa 2 hệ thống!
+\end{enumerate}
+\end{block}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 8: 6-UC OVERVIEW TABLE
+% -----------------------------------------------------------------------------
+\begin{frame}{Tổng Quan Sáu Use Case Thực Nghiệm (UC1--UC6)}
+\begin{table}
+\centering\footnotesize
+\begin{tabularx}{\linewidth}{@{}l l l X@{}}
+\toprule
+\textbf{UC} & \textbf{Bài Toán Workload} & \textbf{Chỉ Mục Giải Pháp} & \textbf{Mở Rộng Lý Thuyết} \\
+\midrule
+\textbf{UC1} & Lọc nhiều cột \& sắp xếp & \textbf{Compound B-Tree} & Thứ tự từ điển, quy tắc tiền tố trái, triệt tiêu toán tử Sort. \\
+\textbf{UC2} & Cờ trạng thái hiếm ($0.24\%$ Y) & \textbf{Filtered / Partial Index} & Chỉ mục có vị từ lọc, tiết kiệm $>98\%$ đĩa, giới hạn với ngoài tập. \\
+\textbf{UC3} & Range query lấy thêm 4 cột & \textbf{Covering Index} (INCLUDE) & Lưu payload ở trang lá, loại bỏ $100\%$ RID Lookup / FETCH. \\
+\textbf{UC4} & Tìm từ/cụm từ trong bài báo & \textbf{Full-Text / Text Index} & Chỉ mục đảo, bẫy ngữ nghĩa (khác ID), Async lag vs Sync write penalty. \\
+\textbf{UC5} & Analytical GROUP BY 1M dòng & \textbf{Clustered Columnstore} (CCI) & Lưu trữ cột nén (23:1), Batch Mode execution, Delta store writes. \\
+\textbf{UC6} & Đối tượng chứa 1 hoặc 2 tags & \textbf{Multikey vs. Child Index} & Nhân bản index entry mảng trong NoSQL vs. bảng con chuẩn hóa 1NF. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 9: UC1 COMPOUND B-TREE (SETUP & 4 QUERIES)
+% -----------------------------------------------------------------------------
+\begin{frame}{UC1: Multi-Column Lookups \& Sorting $\to$ Compound B-Tree}
+\textbf{Bài toán thực tế:} Lọc kết hợp \texttt{OWNER}, \texttt{OBJECT\_TYPE} và sắp xếp theo \texttt{OBJECT\_ID}. Single-column index trên \texttt{OWNER} chỉ thu hẹp được một phần, sau đó DBMS phải quét và lọc phần còn lại.
+
+\begin{block}{Thiết Kế Bốn Câu Truy Vấn Độc Lập Để Cách Ly Từng Cơ Chế}
+\footnotesize
+\begin{itemize}
+  \item \textbf{Query U1a (2 dòng khớp):} \texttt{WHERE OWNER='SYS' AND OBJECT\_TYPE='TABLE' AND OBJECT\_ID BETWEEN 100 AND 200} $\to$ Kiểm tra trường hợp lý tưởng nhất khi cả 3 điều kiện khớp hoàn hảo với tiền tố index.
+  \item \textbf{Query U1b (3,405 dòng khớp):} \texttt{WHERE OWNER='SYS' AND OBJECT\_TYPE='TABLE'} (Không có dải ID) $\to$ Đánh giá chi phí RID Lookup khi số dòng kết quả lớn (Tipping Point).
+  \item \textbf{Query U1c (2 dòng khớp):} \texttt{WHERE OBJECT\_TYPE='TABLE' AND OBJECT\_ID BETWEEN 100 AND 200} $\to$ \textbf{Vi phạm tiền tố trái (Skip Leading Key)}: Kiểm tra optimizer có dùng được index không.
+  \item \textbf{Query U1d (398 dòng khớp):} \texttt{WHERE OWNER='SYS' AND OBJECT\_TYPE='VIEW' ORDER BY OBJECT\_ID} $\to$ Kiểm tra khả năng \textbf{triệt tiêu toán tử Sort (Sort Elimination)}.
+\end{itemize}
+\end{block}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 10: UC1 RESULTS & EXECUTION PLAN
+% -----------------------------------------------------------------------------
+\begin{frame}{UC1: Kết Quả Đo Đạc, Execution Plan \& Đánh Đổi}
+\begin{table}
+\centering\scriptsize
+\begin{tabularx}{\linewidth}{@{}l l r r r r X@{}}
+\toprule
+\textbf{DBMS} & \textbf{Truy Vấn} & \textbf{A p50} & \textbf{B p50} & \textbf{C p50} & \textbf{Speedup} & \textbf{Hành Vi Actual Execution Plan Nổi Bật} \\
+\midrule
+SQL Server & \texttt{U1a} (2 rows) & 32.36 ms & 24.53 ms & \textbf{9.46 ms} & \textbf{3.42$\times$} & Index Seek trỏ đúng 2 dòng, giảm reads từ 2,730 $\to$ 2 trang \\
+SQL Server & \texttt{U1b} (3,405 rows) & 104.48 ms & 84.29 ms & 97.99 ms & 1.07$\times$ & Bỏ qua C để Table Scan vì 3,405 RID lookups quá đắt \\
+SQL Server & \texttt{U1c} (2 rows) & 37.01 ms & 31.97 ms & \textbf{20.04 ms} & \textbf{1.85$\times$} & Thiếu leading key, phải quét toàn bộ cây index thay vì Seek \\
+SQL Server & \texttt{U1d} (398 rows) & 38.02 ms & 11.12 ms & \textbf{10.52 ms} & \textbf{3.61$\times$} & \textbf{Triệt tiêu Sort} hoàn toàn nhờ cây index đã sắp sẵn \\
+\midrule
+MongoDB & \texttt{U1a} (2 docs) & 241.03 ms & 462.78 ms & \textbf{2.34 ms} & \textbf{103.0$\times$} & B quét 71K keys + 71K fetch docs; C seek đúng 2 keys \\
+MongoDB & \texttt{U1b} (3,405 docs) & 253.16 ms & 457.73 ms & \textbf{39.31 ms} & \textbf{6.44$\times$} & B sụp đổ hiệu năng (chậm hơn A 2x); C gom cụm seek hẹp \\
+MongoDB & \texttt{U1c} (2 docs) & 228.33 ms & 204.50 ms & 232.18 ms & 0.98$\times$ & Không có leading key $\to$ Mongo buộc phải COLLSCAN \\
+MongoDB & \texttt{U1d} (398 docs) & 236.43 ms & 10.04 ms & \textbf{7.97 ms} & \textbf{29.7$\times$} & Trả kết quả ngay không cần toán tử bộ nhớ SORT \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{-0.2cm}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{block}{Giải Thích Hiện Tượng Actual Plan}
+\scriptsize
+\begin{itemize}
+  \item \textbf{Mongo B chậm hơn A gần 2x trên U1a/U1b:} Do \texttt{OWNER='SYS'} duyệt 71,802 key và FETCH 71,802 docs ngẫu nhiên từ RAM/đĩa! Compound C thu hẹp seek về đúng 2 docs.
+  \item \textbf{SQL Server bỏ C trên U1b:} 3,405 lần RID Lookup ngẫu nhiên đắt hơn quét tuần tự 2,730 trang heap $\to$ Optimizer tự động chọn \texttt{Table Scan}.
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{Đánh Đổi Dung Lượng \& Chi Phí Ghi (Table B)}
+\scriptsize
+\begin{itemize}
+  \item \textbf{Dung lượng index:} Compound C lớn hơn B từ $+88\%$ đến $+96\%$ (29.2 MB vs 15.5 MB ở SQL 1M).
+  \item \textbf{Thông lượng chèn:} INSERT trên Mongo giảm $-33.5\%$ (11,628 $\to$ 7,736 docs/s).
+  \item \textbf{Kết luận:} Chỉ nên tạo khi lọc có leading key hoặc ORDER BY khớp cây.
+\end{itemize}
+\end{alertblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 11: UC2 FILTERED & PARTIAL INDEX (SETUP)
+% -----------------------------------------------------------------------------
+\begin{frame}{UC2: Filtered \& Partial Index (Dữ Liệu Lệch Cực Đoan)}
+\textbf{Bài toán thực tế:} Cờ \texttt{TEMPORARY = 'Y'} chỉ chiếm $0.24\%$ (2,405 dòng ở 1M), còn $99.76\%$ là 'N'. Dashboard liên tục truy vấn dòng 'Y', trong khi các tác vụ batch hiếm khi quét toàn bộ. Full index lãng phí $>99\%$ bộ nhớ vào các dòng 'N'.
+
+\begin{block}{Thiết Kế Ba Truy Vấn Kiểm Thử Hành Vi Bộ Tối Ưu Hóa}
+\footnotesize
+\begin{enumerate}
+  \item \textbf{Query Y (Inside-Subset --- 615 dòng ở 1M):} \texttt{WHERE TEMPORARY = 'Y' AND OBJECT\_TYPE = 'TABLE' AND OBJECT\_ID BETWEEN 1 AND 10000} $\to$ Kiểm tra hiệu năng đọc khi truy vấn đúng vào tập con được index lọc bảo vệ.
+  \item \textbf{Query N (Outside-Subset --- 15,810 dòng ở 1M):} \texttt{WHERE TEMPORARY = 'N' AND ...} $\to$ Kiểm tra phản ứng của optimizer khi dữ liệu không có trong index C.
+  \item \textbf{Query @p (Parameterized Probe trong SQL Server):} \texttt{WHERE TEMPORARY = @p} $\to$ Chứng minh cơ chế plan caching khiến optimizer buộc phải từ chối Filtered Index nếu không biên dịch lại.
+\end{enumerate}
+\end{block}
+
+\begin{exampleblock}{Cơ Chế Chỉ Mục Lọc / Bán Phần}
+\footnotesize
+SQL Server: \texttt{CREATE INDEX ... WHERE TEMPORARY = 'Y'}; MongoDB: \texttt{partialFilterExpression: \{ temporary: "Y" \}}. Cây B-Tree chỉ lưu trữ đúng 2,405 dòng thay vì 1,000,000 dòng!
+\end{exampleblock}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 12: UC2 RESULTS & STORAGE SAVINGS
+% -----------------------------------------------------------------------------
+\begin{frame}{UC2: Kết Quả Đo Đạc \& Mức Tiết Kiệm Dung Lượng $>99.5\%$}
+\begin{table}
+\centering\footnotesize
+\begin{tabularx}{\linewidth}{@{}l l r r r X@{}}
+\toprule
+\textbf{Hệ Quản Trị} & \textbf{Tập Truy Vấn} & \textbf{Baseline A} & \textbf{Full B} & \textbf{Filtered/Partial C} & \textbf{Công Việc Vật Lý (A $\to$ B $\to$ C)} \\
+\midrule
+SQL Server 1M & Inside 'Y' (615 rows) & 92.32 ms & 9.00 ms & \textbf{5.99 ms} & $28,032 \to 81 \to \mathbf{6\text{ trang}}$ (\textbf{15.4$\times$}) \\
+SQL Server 1M & Outside 'N' (15,810) & 347.95 ms & \textbf{292.28 ms} & 349.62 ms & $28,032 \to \mathbf{81} \to 28,032$ (Quét toàn bộ Heap) \\
+\midrule
+MongoDB 1M & Inside 'Y' (615 docs) & 2,418.9 ms & 17.17 ms & \textbf{6.13 ms} & 1M docs $\to 1,670 \to \mathbf{616\text{ keys}}$ (\textbf{395$\times$}) \\
+MongoDB 1M & Outside 'N' (15,810) & 2,447.9 ms & \textbf{69.45 ms} & 2,438.7 ms & 1M docs $\to \mathbf{15,852} \to 1\text{M docs}$ (COLLSCAN) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{-0.2cm}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{Tiết Kiệm Dung Lượng Phi Thường (Table B)}
+\scriptsize
+\begin{itemize}
+  \item \textbf{SQL Server (1M):} Full Index B: $43.74$\,MB $\to$ Filtered Index C chỉ chiếm \textbf{$0.13$\,MB (Tiết kiệm $-99.71\%$!)}.
+  \item \textbf{MongoDB (1M):} Full Index B: $11.95$\,MB $\to$ Partial Index C chỉ chiếm \textbf{$0.05$\,MB (Tiết kiệm $-99.57\%$!)}.
+  \item \textbf{Thời gian build:} Dựng C nhanh gấp 3.4x--9.7x so với B (179 ms vs 1,741 ms ở SQL).
+\end{itemize}
+\end{exampleblock}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{Giới Hạn Bắt Buộc Cần Ghi Nhớ}
+\scriptsize
+\begin{itemize}
+  \item \textbf{Ngoài tập lọc (Query N):} Cả 2 DBMS sụp đổ về Full Table Scan (349 ms / 2,438 ms).
+  \item \textbf{Tham số hóa (@p trong SQL):} Optimizer từ chối Filtered Index nếu không dùng \texttt{RECOMPILE} để bảo đảm tính đúng đắn của Plan Cache.
+\end{itemize}
+\end{alertblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 13: UC3 COVERING INDEX (SETUP & TIERS)
+% -----------------------------------------------------------------------------
+\begin{frame}{UC3: Covering Index (INCLUDE vs. Compound Keys)}
+\textbf{Bài toán thực tế:} Lọc theo dải \texttt{OBJECT\_ID} và trả về 4 cột mô tả (\texttt{ID, OWNER, OBJECT\_NAME, OBJECT\_TYPE}). Chỉ mục hẹp (Narrow B) tìm được con trỏ nhưng phải thực hiện hàng ngàn lần nhảy ngẫu nhiên (\texttt{RID Lookup} / \texttt{FETCH}) về bảng gốc.
+
+\begin{block}{Thiết Kế Ba Tầng Độ Chọn Lọc (Selectivity Tiers)}
+\footnotesize
+\begin{enumerate}
+  \item \textbf{Point Lookup (1 dòng):} \texttt{WHERE OBJECT\_ID = 16 AND ID = 1} $\to$ Cả Narrow B và Covering C đều hoàn thành trong $\le 3.5$ ms. Phủ index không đem lại lợi ích rõ rệt.
+  \item \textbf{Small Range (60--98 dòng):} \texttt{WHERE OBJECT\_ID BETWEEN 1 AND 50} (100K) hoặc \texttt{1 AND 5} (1M) $\to$ Dữ liệu nằm sẵn trong buffer pool, chi phí lookup của B vẫn rất nhỏ.
+  \item \textbf{Medium Range (1,694--2,775 dòng):} \texttt{BETWEEN 1 AND 1000} (100K) hoặc \texttt{1 AND 200} (1M) $\to$ \textbf{Điểm bùng nổ (Tipping Point)}: Số lần RID Lookup quá lớn khiến Narrow B bị sụp đổ hiệu năng, Covering C phát huy sức mạnh tối đa!
+\end{enumerate}
+\end{block}
+
+\begin{exampleblock}{Cơ Chế Phủ Chỉ Mục}
+\footnotesize
+SQL Server dùng mệnh đề \texttt{INCLUDE (OWNER, OBJECT\_NAME, OBJECT\_TYPE)} lưu payload tại trang lá; MongoDB đưa toàn bộ 4 trường vào khóa Compound và gọi phép chiếu \texttt{\{ \_id: 0 \}} để đạt \texttt{PROJECTION\_COVERED}.
+\end{exampleblock}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 14: UC3 RESULTS & BASE LOOKUP ELIMINATION
+% -----------------------------------------------------------------------------
+\begin{frame}{UC3: Kết Quả Thực Nghiệm, Triệt Tiêu Lookup \& Đánh Đổi}
+\begin{table}
+\centering\footnotesize
+\begin{tabularx}{\linewidth}{@{}l l r r r X@{}}
+\toprule
+\textbf{Hệ Quản Trị} & \textbf{Tầng Chọn Lọc} & \textbf{Baseline A} & \textbf{Narrow B} & \textbf{Covering C} & \textbf{Công Việc Vật Lý (B $\to$ C)} \\
+\midrule
+SQL Server 100K & Point (1 row) & 26.09 ms & 0.00$^*$ ms & 0.00$^*$ ms & $4 \to \mathbf{2\text{ trang}}$ (Triệt tiêu RID Lookup) \\
+SQL Server 100K & Medium (1,694 rows) & 49.59 ms & 52.22 ms & \textbf{22.63 ms} & 2,730 (Scan) $\to \mathbf{29\text{ trang}}$ (\textbf{2.31$\times$}) \\
+SQL Server 1M & Medium (2,775 rows) & 113.93 ms & 49.78 ms & \textbf{32.23 ms} & $2,785 \to \mathbf{49\text{ trang}}$ (\textbf{1.54$\times$}) \\
+\midrule
+MongoDB 100K & Small (98 docs) & 225.39 ms & \textbf{2.83 ms} & 4.40 ms & 98 docs fetched $\to \mathbf{0\text{ docs}}$ (C chậm hơn do scan payload) \\
+MongoDB 100K & Medium (1,694 docs) & 240.47 ms & 17.21 ms & \textbf{14.64 ms} & 1,694 docs $\to \mathbf{0\text{ docs}}$ (\textbf{PROJECTION\_COVERED}) \\
+MongoDB 1M & Medium (2,775 docs) & 2,579.4 ms & 23.91 ms & \textbf{20.12 ms} & 2,775 docs $\to \mathbf{0\text{ docs}}$ (\textbf{128$\times$} vs Baseline A) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{-0.2cm}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{block}{Cơ Chế \& Tipping Point Bùng Nổ}
+\scriptsize
+\begin{itemize}
+  \item \textbf{Triệt tiêu 100\% Base Lookups:} SQL C không còn toán tử \texttt{RID Lookup}; Mongo C đạt stage \texttt{PROJECTION\_COVERED} với \texttt{totalDocsExamined = 0}.
+  \item \textbf{Tipping Point ở 100K Medium:} Chi phí 1,694 lần lookup khiến SQL B bỏ index chọn Table Scan; C chỉ đọc 29 trang lá (nhanh hơn 2.31x).
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{Đánh Đổi Phình To Index (Table B)}
+\scriptsize
+\begin{itemize}
+  \item \textbf{Phình to dung lượng (1M):} Index C tăng \textbf{5.94x trong SQL} (127.4 MB) và \textbf{10.47x trong Mongo} (66.9 MB).
+  \item \textbf{Chi phí ghi:} INSERT throughput giảm $-14.7\%$ trên SQL Server.
+  \item \textbf{Chỉ định dùng:} Chỉ nên áp dụng khi range query có tần suất thực thi cao!
+\end{itemize}
+\end{alertblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 15: UC4 FULL-TEXT / TEXT INDEX (SETUP & 6 QUERIES)
+% -----------------------------------------------------------------------------
+\begin{frame}{UC4: Full-Text \& Text Search (Tìm Kiếm Trên Văn Bản Báo)}
+\textbf{Bài toán thực tế:} Tìm kiếm từ/cụm từ bên trong 10,000 bài báo tiếng Anh (\texttt{BODY} trung vị 371 từ, dài tới 900+ từ). Cây B-Tree chuỗi thông thường vô dụng; quét chuỗi \texttt{LIKE '\%term\%'} hoặc \texttt{\$regex} mất từ 3 đến 4 giây CPU!
+
+\begin{block}{Thiết Kế Sáu Câu Truy Vấn Cô Lập Độ Chọn Lọc}
+\footnotesize
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Ba Truy Vấn Từ Đơn (Single Keywords):}
+\begin{itemize}
+  \item \texttt{election} (2,577 bài --- Tần suất cao)
+  \item \texttt{climate} (326 bài --- Tần suất trung bình)
+  \item \texttt{bitcoin} (7 bài --- Tần suất hiếm)
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{Ba Truy Vấn Cụm Từ Chính Xác (Exact Phrases):}
+\begin{itemize}
+  \item \texttt{"white house"} (1,851 bài --- Phổ biến)
+  \item \texttt{"climate change"} (214 bài --- Trung bình)
+  \item \texttt{"stock market"} (45 bài --- Ít)
+\end{itemize}
+\end{column}
+\end{columns}
+\end{block}
+
+\begin{exampleblock}{Cơ Chế Chỉ Mục Đảo (Inverted Index)}
+\footnotesize
+Tách từ (Word Breaker) $\to$ Lọc Stop-words (the, is, and) $\to$ Gốc từ (Stemmer: elections $\to$ elect) $\to$ \textbf{Posting Lists} trỏ tới danh sách DOC\_ID.
+\end{exampleblock}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 16: UC4 RESULTS & SEMANTIC PARITY TRAP
+% -----------------------------------------------------------------------------
+\begin{frame}{UC4: Kết Quả Đo Đạc \& Bẫy Ngữ Nghĩa (Semantic Parity)}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Microsoft SQL Server (LIKE vs. CONTAINS)}
+\begin{table}
+\centering\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{@{}l r r c r r@{}}
+\toprule
+Từ Khóa & A Dòng & C Dòng & Trùng ID? & A p50 & C p50 \\
+\midrule
+\texttt{election} & 2,577 & 2,311 & \texttt{No} & 3,294 ms & \textbf{21.0 ms} \\
+\texttt{climate} & 326 & 324 & \texttt{No} & 3,983 ms & \textbf{17.4 ms} \\
+\texttt{bitcoin} & 7 & 6 & \texttt{No} & 3,987 ms & \textbf{14.9 ms} \\
+\texttt{"white house"} & 1,851 & 1,845 & \texttt{No} & 3,440 ms & \textbf{22.5 ms} \\
+\texttt{"climate chg"} & 214 & 215 & \texttt{No} & 4,042 ms & \textbf{16.6 ms} \\
+\texttt{"stock mkt"} & 45 & 37 & \texttt{No} & 4,060 ms & \textbf{14.1 ms} \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+\begin{alertblock}{Bẫy Ngữ Nghĩa Trên SQL Server}
+\scriptsize
+Cả 6 query đều trả về \textbf{khác tập DOC\_ID}! LIKE tìm chuỗi con ('re-election'), CONTAINS tìm từ ngữ nghĩa. Đây là 2 câu hỏi nghiệp vụ khác nhau!
+\end{alertblock}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\textbf{MongoDB 7.0 (\$regex vs. \$text)}
+\begin{table}
+\centering\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{@{}l r r c r r@{}}
+\toprule
+Từ Khóa & A Doc & C Doc & Trùng ID? & A p50 & C p50 \\
+\midrule
+\texttt{election} & 2,577 & 3,083 & \texttt{No} & 384.6 ms & \textbf{15.2 ms} \\
+\texttt{climate} & 326 & 326 & \textbf{\texttt{Yes}} & 299.9 ms & \textbf{6.4 ms} (\textbf{46.8$\times$}) \\
+\texttt{bitcoin} & 7 & 7 & \textbf{\texttt{Yes}} & 197.5 ms & \textbf{1.8 ms} (\textbf{107.8$\times$}) \\
+\texttt{"white house"} & 1,851 & 1,851 & \textbf{\texttt{Yes}} & 140.5 ms & \textbf{42.6 ms} (\textbf{3.3$\times$}) \\
+\texttt{"climate chg"} & 214 & 214 & \textbf{\texttt{Yes}} & 288.4 ms & \textbf{52.4 ms} (\textbf{5.5$\times$}) \\
+\texttt{"stock mkt"} & 45 & 45 & \textbf{\texttt{Yes}} & 419.6 ms & \textbf{25.6 ms} (\textbf{16.4$\times$}) \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+\begin{exampleblock}{Kết Quả Mongo \& Stemming}
+\scriptsize
+5 query trả đúng $100\%$ ID có tốc độ tăng từ \textbf{3.3x đến 107.8x}! 'election' trên C trả 3,083 docs do quy về gốc từ 'elect', 'elected'.
+\end{exampleblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 17: UC4 ARCHITECTURAL TRADEOFF (ASYNC VS SYNC)
+% -----------------------------------------------------------------------------
+\begin{frame}{UC4: Đánh Đổi Kiến Trúc: Bất Đồng Bộ (SQL) vs. Đồng Bộ (Mongo)}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{block}{Microsoft SQL Server (Asynchronous Catalog)}
+\footnotesize
+\begin{itemize}
+  \item \textbf{Cơ chế hoạt động:} Tiến trình ngầm (\texttt{fdhost.exe}) thu thập thay đổi qua crawl queue ngoài transaction engine.
+  \item \textbf{Ưu điểm ghi:} INSERT throughput không bị ảnh hưởng trực tiếp lúc chèn dữ liệu ($14,500$ dòng/s).
+  \item \textbf{Nhược điểm chí mạng (Freshness Lag):} Dòng mới chèn mất trung bình \textbf{$5.8$ giây} mới xuất hiện trong kết quả truy vấn \texttt{CONTAINS}!
+  \item \textbf{Phù hợp:} Ứng dụng chấp nhận tính nhất quán cuối cùng (Eventual Consistency).
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{MongoDB (Synchronous Inverted Index)}
+\footnotesize
+\begin{itemize}
+  \item \textbf{Cơ chế hoạt động:} Mọi thao tác ghi văn bản đều phải tách từ (tokenize), băm gốc từ và cập nhật posting lists ngay trong transaction.
+  \item \textbf{Ưu điểm đọc:} Dữ liệu có thể tìm kiếm được \textbf{ngay lập tức (Zero lag)} sau lệnh chèn.
+  \item \textbf{Cái giá cực đắt cho thông lượng ghi:} INSERT throughput sụt giảm tới \textbf{$-95.3\%$} (từ 10,753 doc/s rớt xuống còn 509 doc/s)!
+  \item \textbf{Phù hợp:} Ứng dụng đọc nhiều ghi ít, bắt buộc thấy dữ liệu tức thì.
+\end{itemize}
+\end{alertblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 18: UC5 CLUSTERED COLUMNSTORE INDEX (SETUP)
+% -----------------------------------------------------------------------------
+\begin{frame}{UC5: Clustered Columnstore Index (SQL Server 1M Dòng)}
+\textbf{Bài toán thực tế:} Truy vấn phân tích \texttt{GROUP BY} trên 2 cột (\texttt{OBJECT\_TYPE, OBJECT\_ID}) trên bảng 14 cột. Rowstore Heap buộc phải nạp toàn bộ 219 MB (28,032 trang) vào bộ đệm để đọc cả 12 cột thừa.
+
+\begin{block}{Cơ Chế Lưu Trữ Dạng Cột Nén (CCI) \& Hai Câu Truy Vấn}
+\begin{itemize}
+  \item Bảng được chia thành rowgroup ($1,048,576$ dòng). Mỗi cột được lưu thành \textbf{Column Segment} riêng biệt, nén sâu bằng từ điển và run-length encoding.
+  \item Xử lý vector hóa theo mảng khoảng 900 dòng (\textbf{Batch Mode Execution}).
+  \item \textbf{Truy vấn AGG (Analytical GROUP BY --- 35 nhóm):} \texttt{SELECT OBJECT\_TYPE, COUNT\_BIG(*), SUM(COALESCE(OBJECT\_ID,0)) FROM Table GROUP BY OBJECT\_TYPE}.
+  \item \textbf{Truy vấn POINT (Unindexed Scan --- 1 dòng):} \texttt{SELECT ID, OWNER, OBJECT\_NAME, OBJECT\_TYPE FROM Table WHERE ID = 1} (Chạy khi cả hai bảng \textbf{không có B-tree trên ID}).
+\end{itemize}
+\end{block}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 19: UC5 RESULTS & DELTA ROWGROUP
+% -----------------------------------------------------------------------------
+\begin{frame}{UC5: Kết Quả Đo Đạc, Tỉ Lệ Nén 23:1 \& OPEN Delta Rowgroup}
+\begin{table}
+\centering\footnotesize
+\begin{tabularx}{\linewidth}{@{}l r r r X@{}}
+\toprule
+\textbf{Truy Vấn Nghiên Cứu} & \textbf{Rowstore Heap B} & \textbf{Clustered Columnstore C} & \textbf{Tỉ Lệ Tăng Tốc} & \textbf{Công Việc Vật Lý (Execution Plan)} \\
+\midrule
+\texttt{AGG} (GROUP BY 1M dòng) & 123.2 ms & \textbf{42.4 ms} & \textbf{2.90$\times$} & 28,032 trang Row Mode $\to$ \textbf{1,105 LOB reads Batch Mode} \\
+\texttt{POINT} (Scan 1 dòng) & 88.8 ms & \textbf{3.6 ms} & \textbf{24.49$\times$} & 28,032 trang $\to$ 776 LOB reads (\emph{vẫn là scan, không phải seek}) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{-0.2cm}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{Tỉ Lệ Nén Vật Lý Phi Thường (Table B)}
+\scriptsize
+\begin{itemize}
+  \item Rowstore Heap B: $219.00$\,MB ($28,032$ trang dữ liệu)
+  \item Clustered Columnstore C: \textbf{$9.46$\,MB ($1,211$ trang)}
+  \item \textbf{Đạt tỉ lệ nén $23.15 : 1$ (Tiết kiệm $95.68\%$ đĩa!)}
+  \item Xử lý vector hóa Batch Mode (mảng $\sim 900$ dòng/lô trong CPU cache).
+\end{itemize}
+\end{exampleblock}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{OPEN Delta Rowgroup \& Nuance POINT}
+\scriptsize
+\begin{itemize}
+  \item \textbf{Ghi chèn/sửa:} Chuyển vào OPEN Delta Rowgroup $\to$ throughput ghi giảm $-49.9\%$ (13,265 $\to$ 6,642 dòng/s). UPDATE ghi vào Delete Bitmap.
+  \item \textbf{Bản chất POINT:} Columnstore scan segment nén nhanh hơn heap thô, nhưng B-tree seek thực sự chỉ mất $<1$ ms và 2--3 trang.
+\end{itemize}
+\end{alertblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 20: UC6 MULTIKEY VS NORMALIZED CHILD (SETUP)
+% -----------------------------------------------------------------------------
+\begin{frame}{UC6: Multikey vs. Normalized Child Index (10K Parents / 30K Tags)}
+\textbf{Bài toán thực tế:} Mỗi đối tượng có thể gắn từ 3 đến 5 tags. Cần tìm các đối tượng chứa 1 tag hoặc đồng thời chứa 2 tags.
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{block}{MongoDB 7.0 (Mảng Nhúng Multikey)}
+\footnotesize
+\begin{itemize}
+  \item Cấu trúc: Document chứa mảng \texttt{tags: ["type:TABLE", "owner:SYS"]}.
+  \item Multikey Index trên \texttt{tags}: Tự động unnest mảng và tạo B-tree entry cho từng phần tử tag.
+  \item Lưu trữ: 1 document duy nhất, không cần JOIN.
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{block}{SQL Server 2025 (Bảng Con Chuẩn Hóa 1NF)}
+\footnotesize
+\begin{itemize}
+  \item Cấu trúc: Bảng cha \texttt{Parent} (10K dòng) và bảng con \texttt{Parent\_Tags} (30,471 dòng quan hệ).
+  \item Composite B-Tree Index trên bảng con: \texttt{(TAG, PARENT\_ID)}.
+  \item Truy vấn 2 tag: Dùng \texttt{INTERSECT} hoặc Gom nhóm \texttt{HAVING COUNT = 2}.
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+
+\begin{exampleblock}{Bốn Câu Truy Vấn Kiểm Thử Hành Vi}
+\footnotesize
+\texttt{ONE\_TABLE} (1,247 đối tượng) $\cdot$ \texttt{TWO\_SYS\_TABLE} (1,125 đối tượng) $\cdot$ \texttt{ONE\_TEMP\_Y} (51 đối tượng) $\cdot$ \texttt{TWO\_TABLE\_TEMP\_Y} (41 đối tượng).
+\end{exampleblock}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 21: UC6 RESULTS & CANDIDATE FETCHING
+% -----------------------------------------------------------------------------
+\begin{frame}{UC6: Kết Quả Thực Nghiệm, Candidate Fetching \& Đánh Đổi}
+\begin{table}
+\centering\footnotesize
+\begin{tabularx}{\linewidth}{@{}l l r r r X@{}}
+\toprule
+\textbf{Hệ Quản Trị} & \textbf{Truy Vấn Tag} & \textbf{Baseline A} & \textbf{Index C} & \textbf{Speedup} & \textbf{Actual Plan Execution (A $\to$ C)} \\
+\midrule
+SQL Server & \texttt{ONE\_TABLE} (1,247) & 13.12 ms & \textbf{4.00 ms} & \textbf{3.28$\times$} & $150 \to \mathbf{8\text{ trang}}$ (PK Scan $\to$ Seek bảng con) \\
+SQL Server & \texttt{TWO\_SYS\_TABLE} (1,125) & 16.66 ms & \textbf{11.69 ms} & \textbf{1.42$\times$} & $150 \to \mathbf{41\text{ trang}}$ (2 Seeks + Stream Aggregate) \\
+SQL Server & \texttt{ONE\_TEMP\_Y} (51) & 10.51 ms & \textbf{0.00$^*$ ms} & N/A$^*$ & $150 \to \mathbf{2\text{ trang}}$ (p95: 11.2 $\to$ 1.0 ms) \\
+SQL Server & \texttt{TWO\_TABLE\_TEMP\_Y} (41) & 10.85 ms & \textbf{2.01 ms} & \textbf{5.39$\times$} & $150 \to \mathbf{10\text{ trang}}$ (2 Seeks + Stream Aggregate) \\
+\midrule
+MongoDB & \texttt{ONE\_TABLE} (1,247) & 18.08 ms & \textbf{11.58 ms} & \textbf{1.56$\times$} & 10,000 docs $\to \mathbf{1,247\text{ keys \& docs examined}}$ \\
+MongoDB & \texttt{TWO\_SYS\_TABLE} (1,125) & 21.73 ms & \textbf{13.07 ms} & \textbf{1.66$\times$} & Seek tag TABLE $\to$ FETCH 1,125 candidate docs \\
+MongoDB & \texttt{ONE\_TEMP\_Y} (51) & 28.24 ms & \textbf{2.84 ms} & \textbf{9.94$\times$} & 10,000 docs $\to \mathbf{51\text{ keys \& docs examined}}$ \\
+MongoDB & \texttt{TWO\_TABLE\_TEMP\_Y} (41) & 28.53 ms & \textbf{2.06 ms} & \textbf{13.85$\times$} & Seek tag TEMP\_Y (51 keys) $\to$ FETCH filter RAM \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{-0.2cm}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{block}{Chiến Lược Tối Ưu Của MongoDB}
+\scriptsize
+Trên truy vấn 2 tag, multikey entry chỉ lưu 1 tag. MongoDB chọn seek tag có tính chọn lọc cao nhất (\texttt{temporary:Y} chỉ có 51 keys), sau đó \textbf{FETCH 51 candidate docs} để kiểm tra tag thứ hai trong bộ nhớ RAM $\to$ \textbf{Speedup 13.85x}!
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{Đánh Đổi Ghi Mảng Đa Trị (Table B)}
+\scriptsize
+\begin{itemize}
+  \item \textbf{Nhân bản Index Entry:} Trung bình 3.05 tag/doc $\to$ tạo ra 30,471 entries index cho 10,000 document.
+  \item \textbf{Giảm thông lượng ghi:} INSERT trên Mongo giảm \textbf{$-29.3\%$}; thao tác thêm tag vào mảng (\texttt{\$addToSet}) tăng \textbf{$+33.0\%$} độ trễ ghi.
+\end{itemize}
+\end{alertblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 22: SYNTHESIS - ANSWERING CORE QUESTIONS
+% -----------------------------------------------------------------------------
+\begin{frame}{Chương 5: Trả Lời Trực Tiếp Ba Câu Hỏi Cốt Lõi Của Đề Bài}
+\begin{enumerate}
+  \item \textbf{What are they? (Những cấu trúc/kỹ thuật nào được nghiên cứu?)}
+  \begin{itemize}
+    \item \emph{Kỹ thuật B-Tree:} Compound B-Tree (UC1), Filtered/Partial Index (UC2), Covering Index (UC3), Multikey Index (UC6).
+    \item \emph{Cấu trúc vật lý khác:} Inverted Token Index cho Full-Text (UC4) và Compressed Columnar Segments cho Columnstore (UC5).
+  \end{itemize}
+  \item \textbf{How are they supported? (Các DBMS hiện thực và tối ưu ra sao?)}
+  \begin{itemize}
+    \item SQL Server hỗ trợ \texttt{INCLUDE} leaf-payload, Background Async Full-text Catalog, và Batch Mode vectorization trên Clustered Columnstore.
+    \item MongoDB hỗ trợ Partial Filter Expressions, Multikey Array Unnesting, Synchronous Text Indexing và Covered Compound Projections (\texttt{\_id: 0}).
+  \end{itemize}
+  \item \textbf{How they support? (Chúng hỗ trợ cải thiện hiệu năng thế nào?)}
+  \begin{itemize}
+    \item Tăng tốc vượt trội từ $3\times$ đến $395\times$ khi truy vấn tận dụng đúng đường truy cập vật lý (seek đa cột, loại bỏ Sort, bỏ RID lookup, batch mode, nén đĩa $95\%$).
+  \end{itemize}
+\end{enumerate}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 23: MASTER DECISION MATRIX
+% -----------------------------------------------------------------------------
+\begin{frame}{Bảng Quyết Định Kỹ Thuật Tổng Hợp (V3 PDF Bảng 5.1)}
+\tiny
+\begin{table}
+\centering
+\begin{tabularx}{\linewidth}{@{}l X X X@{}}
+\toprule
+\textbf{Chỉ Mục Nghiên Cứu} & \textbf{Lợi Ích Nổi Bật Do Được} & \textbf{Khi Nào NÊN DÙNG} & \textbf{Đánh Đổi / Khi Nào TRÁNH DÙNG} \\
+\midrule
+\textbf{UC1: Compound B-Tree} & U1a: 3.4x (SQL), 103x (Mongo); U1d: Triệt tiêu toán tử Sort. & Lọc nhiều cột luôn có leading key, hoặc ORDER BY khớp khóa. & Tránh khi thiếu leading key (U1c); Index lớn hơn 90\%, Mongo INSERT giảm 33.5\%. \\
+\addlinespace
+\textbf{UC2: Filtered / Partial} & Query 'Y' 1M: 15.4x (SQL), 395x (Mongo) so với A. & Bảng lệch nặng, thường xuyên lọc giá trị hiếm đã biết (0.24\% active). & Tránh khi query dòng ngoài tập ('N') hoặc tham số SQL (@p); Tiết kiệm $>98\%$ đĩa. \\
+\addlinespace
+\textbf{UC3: Covering Index} & Medium range: 1.54x (SQL 1M), 128x (Mongo vs A); 0 base lookups. & Range query tần suất cao trả về nhiều cột nơi lookup làm nghẽn I/O. & Tránh cho Point lookup (1 dòng); Dung lượng 1M phình to gấp 6x đến 10x! \\
+\addlinespace
+\textbf{UC4: Full-Text / Text} & SQL: 4s $\to$ 15--20 ms; Mongo: 3.3x--107.8x trên cùng tập ID. & Tìm kiếm từ và cụm từ ngôn ngữ tự nhiên bên trong văn bản dài. & Tránh khi cần substring chính xác; SQL trễ 5.8s hiển thị, Mongo INSERT giảm 95.3\%. \\
+\addlinespace
+\textbf{UC5: Clustered Columnstore} & AGG: 2.90x nhanh hơn (Batch Mode); Nén 23.15 : 1 (219 $\to$ 9.46 MB). & Kho dữ liệu, bảng báo cáo phân tích quét tổng hợp ít cột trên 1M dòng. & Tránh cho OLTP ghi nhỏ liên tục; Build mất 22s, INSERT giảm 50\% qua Delta Store. \\
+\addlinespace
+\textbf{UC6: Multikey / Child Index} & Tag chọn lọc: 3.3x--5.4x (SQL) và 9.9x--13.9x (Mongo) so với A. & Lọc theo mảng tags hoặc dòng bảng con theo tên tag chọn lọc. & Tránh cho mảng quá dài ghi nhiều; Lưu 3.05 entries/doc, Mongo INSERT giảm 29.3\%. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 24: METHODOLOGICAL PITFALLS
+% -----------------------------------------------------------------------------
+\begin{frame}{Bốn Cạm Bẫy Phương Pháp Luận Cần Tránh Khi Đánh Giá Index}
+\begin{enumerate}
+  \item \textbf{Có index chưa chắc đã nhanh hơn quét bảng (Index Scan vs Table Scan):} Trong UC1 Mongo, đánh index đơn cột trên \texttt{OWNER='SYS'} làm chậm hơn scan gần gấp đôi (462.8 ms vs 241.0 ms) do duyệt 71,802 key và FETCH 71,802 doc ngẫu nhiên!
+  \item \textbf{Thời gian chạy thấp chưa chắc là Speedup cùng kết quả (Semantic Parity):} Trong UC4 SQL, \texttt{LIKE} và \texttt{CONTAINS} trả về khác tập ID ở cả 6 query do thuật toán tách từ và stemming. Ta không được gán ghép tỉ lệ tăng tốc khi câu hỏi ngữ nghĩa khác nhau.
+  \item \textbf{Quét Columnstore nhanh hơn không có nghĩa là thay thế được B-Tree Seek:} Trong UC5, quét segment nén nhanh hơn quét trang heap ($3.63$ ms vs $88.8$ ms), nhưng đây vẫn là scan toàn bộ bảng chứ không thể đạt tốc độ dưới 1 ms và đọc 2 trang như B-tree seek.
+  \item \textbf{Ngưỡng độ phân giải timer dưới mili-giây (0.00 ms Timer Floor):} Trên SQL Server ở các query selective (UC3 Point, UC6 ONE\_TEMP\_Y), timer batch ghi nhận 0.00 ms. Không được chia cho 0 để ra 'vô cực lần', mà phải đánh giá qua số trang đọc vật lý.
+\end{enumerate}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 25: STREAMLIT COMPANION DEMO ROADMAP
+% -----------------------------------------------------------------------------
+\begin{frame}{Kế Hoạch Live Demo Web Streamlit}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{block}{Cấu Trúc Ứng Dụng Web Ba Phần}
+\begin{enumerate}
+  \item \textbf{Directory of Workload Queries:} Hiển thị tường minh từng query riêng lẻ cho mỗi UC (U1a--U1d, Y/N/@p, 3 Selective Tiers, 6 FTS terms, AGG/POINT, 4 Tags).
+  \item \textbf{Interactive Benchmark Visualizer:} Biểu đồ Plotly nhóm so sánh A vs B vs C; lọc động theo DBMS, quy mô dữ liệu và chỉ số p50/p95/IQR.
+  \item \textbf{Engine Architecture \& Execution Plans:} Trực quan hóa Actual Plans, toán tử vật lý, bảng đánh đổi chi phí ghi (Table B) và ma trận quyết định.
+\end{enumerate}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{Thông Số Trực Quan Trọng Tâm Sẽ Demo}
+\begin{itemize}
+  \item \textbf{UC1:} Minh họa hiện tượng sụp đổ của Mongo B trên đồ thị và biểu diễn loại bỏ toán tử Sort.
+  \item \textbf{UC2:} Trực quan hóa tỉ lệ nén đĩa $99.71\%$ bằng biểu đồ cột dung lượng (0.13 MB vs 43.74 MB).
+  \item \textbf{UC3:} Điểm bùng nổ Tipping Point khi vượt qua 1,600 dòng kết quả.
+  \item \textbf{UC4:} Bảng đối soát tập ID văn bản và thước đo trễ ghi nhận $5.8$s của SQL Server.
+  \item \textbf{UC5:} Tỉ lệ nén $23.15:1$ và cơ chế Delta Store.
+\end{itemize}
+\end{exampleblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SLIDE 26: CONCLUSION & Q&A
+% -----------------------------------------------------------------------------
+\begin{frame}
+\centering
+\vspace{0.8cm}
+{\Huge\textbf{\color{hcmutblue}XIN CHÂN THÀNH CẢM ƠN}}\\[0.3cm]
+{\Large\textbf{THẦY VÀ CÁC BẠN ĐÃ LẮNG NGHE!}}\\[0.8cm]
+
+\begin{alertblock}{Thông Điệp Kỹ Sư Cốt Lõi Từ Đồ Án}
+\centering
+\textbf{Không có ``chỉ mục vạn năng'' (Silver Bullet Index).} Mọi chỉ mục đều là sự đánh đổi cân não giữa \textbf{chi phí đĩa, thời gian build và thông lượng ghi} để đổi lấy \textbf{tốc độ đọc}. Hãy luôn đo đạc bằng Workload thực tế và giám sát chặt chẽ qua Actual Execution Plan!
+\end{alertblock}
+
+\vspace{0.5cm}
+{\large\textbf{\color{accentblue}Nhóm 02 sẵn sàng trả lời các câu hỏi (Q\&A)}}\\[0.2cm]
+\footnotesize CO3021 - Hệ Quản Trị Cơ Sở Dữ Liệu $\cdot$ Học kỳ 261 $\cdot$ HCMUT 2026
+\end{frame}
+
+\end{document}

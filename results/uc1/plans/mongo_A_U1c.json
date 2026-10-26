@@ -1,0 +1,151 @@
+{
+  "section": "READ_PLAN",
+  "run_id": "UC1-2026-10-24T08:12:17.664Z-50449",
+  "configuration": "A",
+  "query_id": "U1c",
+  "total_keys_examined": 0,
+  "total_docs_examined": 100000,
+  "returned_rows": 2,
+  "plan": {
+    "explainVersion": "1",
+    "queryPlanner": {
+      "namespace": "dbms_ew_group02.uc1_bench_100K",
+      "indexFilterSet": false,
+      "parsedQuery": {
+        "$and": [
+          {
+            "OBJECT_ID": {
+              "$eq": 16
+            }
+          },
+          {
+            "OBJECT_TYPE": {
+              "$eq": "TABLE"
+            }
+          }
+        ]
+      },
+      "queryHash": "C13D5A9F",
+      "planCacheKey": "C13D5A9F",
+      "maxIndexedOrSolutionsReached": false,
+      "maxIndexedAndSolutionsReached": false,
+      "maxScansToExplodeReached": false,
+      "winningPlan": {
+        "stage": "PROJECTION_SIMPLE",
+        "transformBy": {
+          "_id": 0,
+          "ID": 1,
+          "OWNER": 1,
+          "OBJECT_TYPE": 1,
+          "OBJECT_ID": 1
+        },
+        "inputStage": {
+          "stage": "COLLSCAN",
+          "filter": {
+            "$and": [
+              {
+                "OBJECT_ID": {
+                  "$eq": 16
+                }
+              },
+              {
+                "OBJECT_TYPE": {
+                  "$eq": "TABLE"
+                }
+              }
+            ]
+          },
+          "direction": "forward"
+        }
+      },
+      "rejectedPlans": []
+    },
+    "executionStats": {
+      "executionSuccess": true,
+      "nReturned": 2,
+      "executionTimeMillis": 211,
+      "totalKeysExamined": 0,
+      "totalDocsExamined": 100000,
+      "executionStages": {
+        "stage": "PROJECTION_SIMPLE",
+        "nReturned": 2,
+        "executionTimeMillisEstimate": 24,
+        "works": 100001,
+        "advanced": 2,
+        "needTime": 99998,
+        "needYield": 0,
+        "saveState": 100,
+        "restoreState": 100,
+        "isEOF": 1,
+        "transformBy": {
+          "_id": 0,
+          "ID": 1,
+          "OWNER": 1,
+          "OBJECT_TYPE": 1,
+          "OBJECT_ID": 1
+        },
+        "inputStage": {
+          "stage": "COLLSCAN",
+          "filter": {
+            "$and": [
+              {
+                "OBJECT_ID": {
+                  "$eq": 16
+                }
+              },
+              {
+                "OBJECT_TYPE": {
+                  "$eq": "TABLE"
+                }
+              }
+            ]
+          },
+          "nReturned": 2,
+          "executionTimeMillisEstimate": 24,
+          "works": 100001,
+          "advanced": 2,
+          "needTime": 99998,
+          "needYield": 0,
+          "saveState": 100,
+          "restoreState": 100,
+          "isEOF": 1,
+          "direction": "forward",
+          "docsExamined": 100000
+        }
+      }
+    },
+    "command": {
+      "find": "uc1_bench_100K",
+      "filter": {
+        "OBJECT_TYPE": "TABLE",
+        "OBJECT_ID": 16
+      },
+      "projection": {
+        "_id": 0,
+        "ID": 1,
+        "OWNER": 1,
+        "OBJECT_TYPE": 1,
+        "OBJECT_ID": 1
+      },
+      "$db": "dbms_ew_group02"
+    },
+    "serverInfo": {
+      "host": "MarcusVu",
+      "port": 27017,
+      "version": "7.0.12",
+      "gitVersion": "b6513ce0781db6818e24619e8a461eae90bc94fc"
+    },
+    "serverParameters": {
+      "internalQueryFacetBufferSizeBytes": 104857600,
+      "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+      "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+      "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+      "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+      "internalQueryProhibitBlockingMergeOnMongoS": 0,
+      "internalQueryMaxAddToSetBytes": 104857600,
+      "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+      "internalQueryFrameworkControl": "trySbeRestricted"
+    },
+    "ok": 1
+  }
+}

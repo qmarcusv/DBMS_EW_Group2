@@ -1,0 +1,10 @@
+# Preserve measured evidence and dataset bytes across Windows and Linux checkouts.
+results/** -text
+local_data/** -text
+
+# Keep project source and documentation readable across platforms.
+*.py text eol=lf
+*.js text eol=lf
+*.md text eol=lf
+*.tex text eol=lf
+*.sql text eol=lf

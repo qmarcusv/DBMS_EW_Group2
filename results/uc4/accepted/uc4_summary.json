@@ -1,0 +1,410 @@
+{
+  "section": "UC4_VALIDATED_SUMMARY",
+  "source_rows": 10000,
+  "sql_plan_count": 12,
+  "mongo_plan_count": 12,
+  "read": [
+    {
+      "engine": "SQL_SERVER",
+      "query_id": "K_HIGH",
+      "A": {
+        "count": 2577,
+        "median_ms": 3294.238,
+        "p95_ms": 3462.4832
+      },
+      "C": {
+        "count": 2311,
+        "median_ms": 21.001,
+        "p95_ms": 24.676
+      },
+      "same_id_set": false,
+      "A_only": 266,
+      "C_only": 0,
+      "same_result_speedup_A_over_C": null
+    },
+    {
+      "engine": "MONGODB",
+      "query_id": "K_HIGH",
+      "A": {
+        "count": 2577,
+        "median_ms": 384.6009000000049,
+        "p95_ms": 478.0501199999999
+      },
+      "C": {
+        "count": 3083,
+        "median_ms": 15.18069999999716,
+        "p95_ms": 32.195859999999804
+      },
+      "same_id_set": false,
+      "A_only": 32,
+      "C_only": 538,
+      "same_result_speedup_A_over_C": null
+    },
+    {
+      "engine": "SQL_SERVER",
+      "query_id": "K_MED",
+      "A": {
+        "count": 326,
+        "median_ms": 3983.54,
+        "p95_ms": 4100.8736
+      },
+      "C": {
+        "count": 324,
+        "median_ms": 17.401,
+        "p95_ms": 18.977
+      },
+      "same_id_set": false,
+      "A_only": 2,
+      "C_only": 0,
+      "same_result_speedup_A_over_C": null
+    },
+    {
+      "engine": "MONGODB",
+      "query_id": "K_MED",
+      "A": {
+        "count": 326,
+        "median_ms": 299.96169999999984,
+        "p95_ms": 323.3421000000002
+      },
+      "C": {
+        "count": 326,
+        "median_ms": 6.4069000000017695,
+        "p95_ms": 10.300719999999272
+      },
+      "same_id_set": true,
+      "A_only": 0,
+      "C_only": 0,
+      "same_result_speedup_A_over_C": 46.819
+    },
+    {
+      "engine": "SQL_SERVER",
+      "query_id": "K_LOW",
+      "A": {
+        "count": 7,
+        "median_ms": 3986.989,
+        "p95_ms": 4273.678
+      },
+      "C": {
+        "count": 6,
+        "median_ms": 14.855,
+        "p95_ms": 15.1328
+      },
+      "same_id_set": false,
+      "A_only": 1,
+      "C_only": 0,
+      "same_result_speedup_A_over_C": null
+    },
+    {
+      "engine": "MONGODB",
+      "query_id": "K_LOW",
+      "A": {
+        "count": 7,
+        "median_ms": 197.5037999999986,
+        "p95_ms": 213.74984000000111
+      },
+      "C": {
+        "count": 7,
+        "median_ms": 1.8329999999987194,
+        "p95_ms": 2.3601600000009046
+      },
+      "same_id_set": true,
+      "A_only": 0,
+      "C_only": 0,
+      "same_result_speedup_A_over_C": 107.749
+    },
+    {
+      "engine": "SQL_SERVER",
+      "query_id": "P_HIGH",
+      "A": {
+        "count": 1851,
+        "median_ms": 3439.644,
+        "p95_ms": 3691.9215999999997
+      },
+      "C": {
+        "count": 1845,
+        "median_ms": 22.549,
+        "p95_ms": 24.0606
+      },
+      "same_id_set": false,
+      "A_only": 6,
+      "C_only": 0,
+      "same_result_speedup_A_over_C": null
+    },
+    {
+      "engine": "MONGODB",
+      "query_id": "P_HIGH",
+      "A": {
+        "count": 1851,
+        "median_ms": 140.5306000000055,
+        "p95_ms": 212.01640000000188
+      },
+      "C": {
+        "count": 1851,
+        "median_ms": 42.58160000000498,
+        "p95_ms": 101.75308000000658
+      },
+      "same_id_set": true,
+      "A_only": 0,
+      "C_only": 0,
+      "same_result_speedup_A_over_C": 3.3
+    },
+    {
+      "engine": "SQL_SERVER",
+      "query_id": "P_MED",
+      "A": {
+        "count": 214,
+        "median_ms": 4041.977,
+        "p95_ms": 4335.812
+      },
+      "C": {
+        "count": 215,
+        "median_ms": 16.628,
+        "p95_ms": 20.3466
+      },
+      "same_id_set": false,
+      "A_only": 0,
+      "C_only": 1,
+      "same_result_speedup_A_over_C": null
+    },
+    {
+      "engine": "MONGODB",
+      "query_id": "P_MED",
+      "A": {
+        "count": 214,
+        "median_ms": 288.3880999999965,
+        "p95_ms": 311.156839999996
+      },
+      "C": {
+        "count": 214,
+        "median_ms": 52.39079999999376,
+        "p95_ms": 56.09126000000106
+      },
+      "same_id_set": true,
+      "A_only": 0,
+      "C_only": 0,
+      "same_result_speedup_A_over_C": 5.505
+    },
+    {
+      "engine": "SQL_SERVER",
+      "query_id": "P_LOW",
+      "A": {
+        "count": 45,
+        "median_ms": 4060.092,
+        "p95_ms": 4157.8553999999995
+      },
+      "C": {
+        "count": 37,
+        "median_ms": 14.126,
+        "p95_ms": 18.0286
+      },
+      "same_id_set": false,
+      "A_only": 8,
+      "C_only": 0,
+      "same_result_speedup_A_over_C": null
+    },
+    {
+      "engine": "MONGODB",
+      "query_id": "P_LOW",
+      "A": {
+        "count": 45,
+        "median_ms": 419.5558000000019,
+        "p95_ms": 434.5698999999906
+      },
+      "C": {
+        "count": 45,
+        "median_ms": 25.552800000004936,
+        "p95_ms": 27.716500000003723
+      },
+      "same_id_set": true,
+      "A_only": 0,
+      "C_only": 0,
+      "same_result_speedup_A_over_C": 16.419
+    }
+  ],
+  "write": {
+    "SQL_SERVER": {
+      "INSERT_A": {
+        "rows": 200,
+        "median_ms": 3.9505,
+        "p95_ms": 7.549099999999994,
+        "rows_per_second": 4573.728503476033
+      },
+      "INSERT_C": {
+        "rows": 200,
+        "median_ms": 3.9154999999999998,
+        "p95_ms": 16.372599999999977,
+        "rows_per_second": 3362.0225927918236
+      },
+      "UPDATE_A": {
+        "rows": 200,
+        "median_ms": 2.9935,
+        "p95_ms": 16.75224999999997,
+        "rows_per_second": null
+      },
+      "UPDATE_C": {
+        "rows": 200,
+        "median_ms": 3.0035,
+        "p95_ms": 15.589199999999975,
+        "rows_per_second": null
+      }
+    },
+    "MONGODB": {
+      "INSERT_A": {
+        "rows": 200,
+        "median_ms": 6.8448500000013155,
+        "p95_ms": 13.693865000001095,
+        "rows_per_second": 2537.9841046060155
+      },
+      "UPDATE_A": {
+        "rows": 200,
+        "median_ms": 38.70765000000392,
+        "p95_ms": 51.99165500000234,
+        "rows_per_second": null
+      },
+      "INSERT_C": {
+        "rows": 200,
+        "median_ms": 52.3778000000093,
+        "p95_ms": 704.9125599999921,
+        "rows_per_second": 119.05836264748531
+      },
+      "UPDATE_C": {
+        "rows": 200,
+        "median_ms": 115.46674999999959,
+        "p95_ms": 308.3379249999995,
+        "rows_per_second": null
+      }
+    }
+  },
+  "cross_engine_id_set": {
+    "K_HIGH_A": {
+      "same": true,
+      "SQL_only": 0,
+      "MONGO_only": 0
+    },
+    "K_HIGH_C": {
+      "same": false,
+      "SQL_only": 0,
+      "MONGO_only": 772
+    },
+    "K_MED_A": {
+      "same": true,
+      "SQL_only": 0,
+      "MONGO_only": 0
+    },
+    "K_MED_C": {
+      "same": false,
+      "SQL_only": 0,
+      "MONGO_only": 2
+    },
+    "K_LOW_A": {
+      "same": true,
+      "SQL_only": 0,
+      "MONGO_only": 0
+    },
+    "K_LOW_C": {
+      "same": false,
+      "SQL_only": 0,
+      "MONGO_only": 1
+    },
+    "P_HIGH_A": {
+      "same": true,
+      "SQL_only": 0,
+      "MONGO_only": 0
+    },
+    "P_HIGH_C": {
+      "same": false,
+      "SQL_only": 0,
+      "MONGO_only": 6
+    },
+    "P_MED_A": {
+      "same": true,
+      "SQL_only": 0,
+      "MONGO_only": 0
+    },
+    "P_MED_C": {
+      "same": false,
+      "SQL_only": 1,
+      "MONGO_only": 0
+    },
+    "P_LOW_A": {
+      "same": true,
+      "SQL_only": 0,
+      "MONGO_only": 0
+    },
+    "P_LOW_C": {
+      "same": false,
+      "SQL_only": 0,
+      "MONGO_only": 8
+    }
+  },
+  "sql_plan_operators": {
+    "K_HIGH_A": [
+      "Clustered Index Scan",
+      "Filter"
+    ],
+    "K_HIGH_C": [
+      "Clustered Index Scan",
+      "Merge Join",
+      "Table-valued function"
+    ],
+    "K_MED_A": [
+      "Clustered Index Scan",
+      "Filter"
+    ],
+    "K_MED_C": [
+      "Clustered Index Scan",
+      "Merge Join",
+      "Table-valued function"
+    ],
+    "K_LOW_A": [
+      "Clustered Index Scan",
+      "Filter"
+    ],
+    "K_LOW_C": [
+      "Clustered Index Scan",
+      "Merge Join",
+      "Table-valued function"
+    ],
+    "P_HIGH_A": [
+      "Clustered Index Scan",
+      "Filter"
+    ],
+    "P_HIGH_C": [
+      "Clustered Index Scan",
+      "Merge Join",
+      "Table-valued function"
+    ],
+    "P_MED_A": [
+      "Clustered Index Scan",
+      "Filter"
+    ],
+    "P_MED_C": [
+      "Clustered Index Scan",
+      "Merge Join",
+      "Table-valued function"
+    ],
+    "P_LOW_A": [
+      "Clustered Index Scan",
+      "Filter"
+    ],
+    "P_LOW_C": [
+      "Clustered Index Scan",
+      "Merge Join",
+      "Table-valued function"
+    ]
+  },
+  "freshness": {
+    "SQL_SERVER": "FRESHNESS 2 1 93 5795.362",
+    "MONGODB": {
+      "section": "FRESHNESS",
+      "run_id": "UC4-MONGO-2026-10-25T04:24:27.003Z",
+      "config": "C",
+      "doc_id": 2,
+      "modified": 1,
+      "visible": true,
+      "polls": 1,
+      "elapsed_ms": 21.296999999991385
+    }
+  },
+  "status": "PASS"
+}

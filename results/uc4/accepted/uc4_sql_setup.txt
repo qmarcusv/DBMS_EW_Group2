@@ -1,0 +1,13 @@
+Changed database context to 'DBMS_EW_Group02'.
+ENVIRONMENT Microsoft SQL Server 2025 (RTM-GDR) (KB5128492) - 17.0.1145.4 (X64) 
+	Oct  2 2026 17:45:24 
+	Copyright (C) 2025 Microsoft Corporation
+	Enterprise Developer Edition (64-bit) on Windows 10 Home 10.0 <X64> (Build 26220: ) (Hypervisor)
+ DBMS_EW_Group02 1
+COPY_READY UC4_Read_A 10000 7008.620
+COPY_READY UC4_Read_C 10000 7008.620
+COPY_READY UC4_Write_A 10000 7008.620
+COPY_READY UC4_Write_C 10000 7008.620
+INDEX_BUILD read C 63.062 15203.270 0 10000 13
+INDEX_BUILD write C 23.554 16177.055 0 10000 13
+SETUP_COMPLETE PASS

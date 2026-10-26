@@ -1,0 +1,14 @@
+/* Only after all UC2 raw output/plans are saved. Drops exactly eight copies. */
+USE [DBMS_EW_Group02];SET NOCOUNT ON;
+DROP TABLE IF EXISTS dbo.UC2_Bench_100K;
+DROP TABLE IF EXISTS dbo.UC2_Bench_1000K;
+DROP TABLE IF EXISTS dbo.UC2_Write_A_100K;
+DROP TABLE IF EXISTS dbo.UC2_Write_B_100K;
+DROP TABLE IF EXISTS dbo.UC2_Write_C_100K;
+DROP TABLE IF EXISTS dbo.UC2_Write_A_1000K;
+DROP TABLE IF EXISTS dbo.UC2_Write_B_1000K;
+DROP TABLE IF EXISTS dbo.UC2_Write_C_1000K;
+SELECT N'AFTER_CLEANUP' section,
+ (SELECT COUNT_BIG(*) FROM dbo.DEMO_BIG_TABLE_100K) source_100k,
+ (SELECT COUNT_BIG(*) FROM dbo.DEMO_BIG_TABLE_1000K) source_1m,
+ (SELECT COUNT(*) FROM sys.tables WHERE schema_id=SCHEMA_ID(N'dbo') AND name LIKE N'UC2[_]%') remaining_uc2_copies;

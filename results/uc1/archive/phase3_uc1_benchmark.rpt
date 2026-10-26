@@ -1,0 +1,13 @@
+﻿section    database_name                                                                                                                    session_id sample_table_object_id note
+---------- -------------------------------------------------------------------------------------------------------------------------------- ---------- ---------------------- ------------------------------------------------------------------------
+CORE_READY DBMS_EW_Group02                                                                                                                  95         -1535095187            Run the smoke or UC benchmark in this exact query window and connection.
+
+section                session_id sample_table_object_id read_proc_object_id
+---------------------- ---------- ---------------------- -------------------
+UC1_SESSION_AFTER_CORE 95         -1535095187            -1503095073
+
+Msg 51102, Level 16, State 1, Line 21
+Read copy must start at A with no optional index.
+** An error was encountered during execution of batch. Exiting.
+
+Completion time: 2026-10-24T15:06:14.8647435+07:00

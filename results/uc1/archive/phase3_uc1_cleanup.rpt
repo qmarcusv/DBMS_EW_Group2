@@ -1,0 +1,13 @@
+﻿section        copy_name
+-------------- --------------------------------------------------------------------------------------------------------------------------------
+BEFORE_CLEANUP UC1_Bench_100K
+BEFORE_CLEANUP UC1_Write_A_100K
+BEFORE_CLEANUP UC1_Write_B_100K
+BEFORE_CLEANUP UC1_Write_C_100K
+
+section       reference_rows       remaining_copies
+------------- -------------------- ----------------
+AFTER_CLEANUP 100000               0
+
+
+Completion time: 2026-10-24T15:01:10.6566026+07:00

@@ -1,0 +1,5 @@
+{"section":"COPY_DROPPED","name":"uc1_bench_100K","rows_before":100000,"dropped":true}
+{"section":"COPY_DROPPED","name":"uc1_write_A_100K","rows_before":120000,"dropped":true}
+{"section":"COPY_DROPPED","name":"uc1_write_B_100K","rows_before":120000,"dropped":true}
+{"section":"COPY_DROPPED","name":"uc1_write_C_100K","rows_before":120000,"dropped":true}
+{"section":"AFTER_CLEANUP","reference_rows":100000,"remaining":[]}

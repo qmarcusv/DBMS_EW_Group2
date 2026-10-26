@@ -1,0 +1,6 @@
+{"section":"SOURCE_INDEXES","collection":"big_table_100k","indexes":[{"v":2,"key":{"_id":1},"name":"_id_"},{"v":2,"key":{"TEMPORARY":1},"name":"TEMPORARY_1","partialFilterExpression":{"TEMPORARY":"Y"}}]}
+{"section":"COPY_PARITY","name":"uc1_bench_100K","rows":100000,"id_sum":5000050000,"object_id_sum":3262143302,"indexes":[{"v":2,"key":{"_id":1},"name":"_id_"}]}
+{"section":"COPY_PARITY","name":"uc1_write_A_100K","rows":100000,"id_sum":5000050000,"object_id_sum":3262143302,"indexes":[{"v":2,"key":{"_id":1},"name":"_id_"}]}
+{"section":"COPY_PARITY","name":"uc1_write_B_100K","rows":100000,"id_sum":5000050000,"object_id_sum":3262143302,"indexes":[{"v":2,"key":{"_id":1},"name":"_id_"}]}
+{"section":"COPY_PARITY","name":"uc1_write_C_100K","rows":100000,"id_sum":5000050000,"object_id_sum":3262143302,"indexes":[{"v":2,"key":{"_id":1},"name":"_id_"}]}
+{"section":"COPY_READY","names":["uc1_bench_100K","uc1_write_A_100K","uc1_write_B_100K","uc1_write_C_100K"],"note":"Four 100K copies; each has only mandatory _id_ index."}

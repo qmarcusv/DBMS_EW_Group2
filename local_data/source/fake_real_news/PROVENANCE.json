@@ -1,0 +1,35 @@
+{
+  "dataset_id": "genesisqu/fake-real-news",
+  "repository_url": "https://huggingface.co/datasets/genesisqu/fake-real-news",
+  "revision": "9cca94a438905a40883b71c3b5f91c9673b6eec9",
+  "retrieved_on": "2026-10-25",
+  "source_files_unmodified": true,
+  "repository_license_tag": "bsd",
+  "columns": ["title", "text", "subject", "date"],
+  "files": [
+    {
+      "name": "Fake.csv",
+      "source_url": "https://huggingface.co/datasets/genesisqu/fake-real-news/resolve/9cca94a438905a40883b71c3b5f91c9673b6eec9/Fake.csv",
+      "bytes": 62789876,
+      "sha256": "bebf8bcfe95678bf2c732bf413a2ce5f621af0102c82bf08083b2e5d3c693d0c",
+      "rows": 23481,
+      "blank_or_whitespace_text_rows": 630,
+      "blank_or_whitespace_title_rows": 0,
+      "min_text_characters": 1,
+      "max_text_characters": 51794
+    },
+    {
+      "name": "True.csv",
+      "source_url": "https://huggingface.co/datasets/genesisqu/fake-real-news/resolve/9cca94a438905a40883b71c3b5f91c9673b6eec9/True.csv",
+      "bytes": 53582940,
+      "sha256": "ba0844414a65dc6ae7402b8eee5306da24b6b56488d6767135af466c7dcb2775",
+      "rows": 21417,
+      "blank_or_whitespace_text_rows": 1,
+      "blank_or_whitespace_title_rows": 0,
+      "min_text_characters": 1,
+      "max_text_characters": 29781
+    }
+  ],
+  "total_rows": 44898,
+  "note": "Source CSVs are byte-for-byte downloads. Counts were obtained with Python csv.DictReader; no records were removed or transformed."
+}

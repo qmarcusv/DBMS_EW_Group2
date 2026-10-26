@@ -1,0 +1,4 @@
+Changed database context to 'DBMS_EW_Group02'.
+section             
+--------------------
+UC5_CLEANUP_COMPLETE

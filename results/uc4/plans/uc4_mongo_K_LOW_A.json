@@ -1,0 +1,120 @@
+{
+  "section": "READ_PLAN",
+  "run_id": "UC4-MONGO-2026-10-25T04:24:27.003Z",
+  "query_id": "K_LOW",
+  "config": "A",
+  "total_keys_examined": 0,
+  "total_docs_examined": 10000,
+  "returned_rows": 7,
+  "plan": {
+    "explainVersion": "1",
+    "queryPlanner": {
+      "namespace": "dbms_ew_group02.uc4_read_A",
+      "indexFilterSet": false,
+      "parsedQuery": {
+        "BODY": {
+          "$regex": "bitcoin",
+          "$options": "i"
+        }
+      },
+      "queryHash": "D7275BFB",
+      "planCacheKey": "D7275BFB",
+      "maxIndexedOrSolutionsReached": false,
+      "maxIndexedAndSolutionsReached": false,
+      "maxScansToExplodeReached": false,
+      "winningPlan": {
+        "stage": "PROJECTION_SIMPLE",
+        "transformBy": {
+          "_id": 0,
+          "DOC_ID": 1
+        },
+        "inputStage": {
+          "stage": "COLLSCAN",
+          "filter": {
+            "BODY": {
+              "$regex": "bitcoin",
+              "$options": "i"
+            }
+          },
+          "direction": "forward"
+        }
+      },
+      "rejectedPlans": []
+    },
+    "executionStats": {
+      "executionSuccess": true,
+      "nReturned": 7,
+      "executionTimeMillis": 189,
+      "totalKeysExamined": 0,
+      "totalDocsExamined": 10000,
+      "executionStages": {
+        "stage": "PROJECTION_SIMPLE",
+        "nReturned": 7,
+        "executionTimeMillisEstimate": 161,
+        "works": 10001,
+        "advanced": 7,
+        "needTime": 9993,
+        "needYield": 0,
+        "saveState": 13,
+        "restoreState": 13,
+        "isEOF": 1,
+        "transformBy": {
+          "_id": 0,
+          "DOC_ID": 1
+        },
+        "inputStage": {
+          "stage": "COLLSCAN",
+          "filter": {
+            "BODY": {
+              "$regex": "bitcoin",
+              "$options": "i"
+            }
+          },
+          "nReturned": 7,
+          "executionTimeMillisEstimate": 161,
+          "works": 10001,
+          "advanced": 7,
+          "needTime": 9993,
+          "needYield": 0,
+          "saveState": 13,
+          "restoreState": 13,
+          "isEOF": 1,
+          "direction": "forward",
+          "docsExamined": 10000
+        }
+      }
+    },
+    "command": {
+      "find": "uc4_read_A",
+      "filter": {
+        "BODY": {
+          "$regex": "bitcoin",
+          "$options": "i"
+        }
+      },
+      "projection": {
+        "_id": 0,
+        "DOC_ID": 1
+      },
+      "$db": "dbms_ew_group02"
+    },
+    "serverInfo": {
+      "host": "MarcusVu",
+      "port": 27017,
+      "version": "7.0.12",
+      "gitVersion": "b6513ce0781db6818e24619e8a461eae90bc94fc"
+    },
+    "serverParameters": {
+      "internalQueryFacetBufferSizeBytes": 104857600,
+      "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+      "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+      "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+      "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+      "internalQueryProhibitBlockingMergeOnMongoS": 0,
+      "internalQueryMaxAddToSetBytes": 104857600,
+      "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+      "internalQueryFrameworkControl": "trySbeRestricted"
+    },
+    "ok": 1
+  }
+}

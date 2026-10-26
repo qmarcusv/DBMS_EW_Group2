@@ -1,0 +1,189 @@
+{
+  "section": "READ_PLAN",
+  "run_id": "UC4-MONGO-2026-10-25T04:24:27.003Z",
+  "query_id": "K_LOW",
+  "config": "C",
+  "total_keys_examined": 7,
+  "total_docs_examined": 7,
+  "returned_rows": 7,
+  "plan": {
+    "explainVersion": "1",
+    "queryPlanner": {
+      "namespace": "dbms_ew_group02.uc4_read_C",
+      "indexFilterSet": false,
+      "parsedQuery": {
+        "$text": {
+          "$search": "bitcoin",
+          "$language": "english",
+          "$caseSensitive": false,
+          "$diacriticSensitive": false
+        }
+      },
+      "queryHash": "442C54DD",
+      "planCacheKey": "E230455A",
+      "maxIndexedOrSolutionsReached": false,
+      "maxIndexedAndSolutionsReached": false,
+      "maxScansToExplodeReached": false,
+      "winningPlan": {
+        "stage": "PROJECTION_SIMPLE",
+        "transformBy": {
+          "_id": 0,
+          "DOC_ID": 1
+        },
+        "inputStage": {
+          "stage": "TEXT_MATCH",
+          "indexPrefix": {},
+          "indexName": "ix_uc4_body_text",
+          "parsedTextQuery": {
+            "terms": [
+              "bitcoin"
+            ],
+            "negatedTerms": [],
+            "phrases": [],
+            "negatedPhrases": []
+          },
+          "textIndexVersion": 3,
+          "inputStage": {
+            "stage": "FETCH",
+            "inputStage": {
+              "stage": "IXSCAN",
+              "keyPattern": {
+                "_fts": "text",
+                "_ftsx": 1
+              },
+              "indexName": "ix_uc4_body_text",
+              "isMultiKey": true,
+              "isUnique": false,
+              "isSparse": false,
+              "isPartial": false,
+              "indexVersion": 2,
+              "direction": "backward",
+              "indexBounds": {}
+            }
+          }
+        }
+      },
+      "rejectedPlans": []
+    },
+    "executionStats": {
+      "executionSuccess": true,
+      "nReturned": 7,
+      "executionTimeMillis": 0,
+      "totalKeysExamined": 7,
+      "totalDocsExamined": 7,
+      "executionStages": {
+        "stage": "PROJECTION_SIMPLE",
+        "nReturned": 7,
+        "executionTimeMillisEstimate": 0,
+        "works": 8,
+        "advanced": 7,
+        "needTime": 0,
+        "needYield": 0,
+        "saveState": 0,
+        "restoreState": 0,
+        "isEOF": 1,
+        "transformBy": {
+          "_id": 0,
+          "DOC_ID": 1
+        },
+        "inputStage": {
+          "stage": "TEXT_MATCH",
+          "nReturned": 7,
+          "executionTimeMillisEstimate": 0,
+          "works": 8,
+          "advanced": 7,
+          "needTime": 0,
+          "needYield": 0,
+          "saveState": 0,
+          "restoreState": 0,
+          "isEOF": 1,
+          "indexPrefix": {},
+          "indexName": "ix_uc4_body_text",
+          "parsedTextQuery": {
+            "terms": [
+              "bitcoin"
+            ],
+            "negatedTerms": [],
+            "phrases": [],
+            "negatedPhrases": []
+          },
+          "textIndexVersion": 3,
+          "docsRejected": 0,
+          "inputStage": {
+            "stage": "FETCH",
+            "nReturned": 7,
+            "executionTimeMillisEstimate": 0,
+            "works": 8,
+            "advanced": 7,
+            "needTime": 0,
+            "needYield": 0,
+            "saveState": 0,
+            "restoreState": 0,
+            "isEOF": 1,
+            "docsExamined": 7,
+            "alreadyHasObj": 0,
+            "inputStage": {
+              "stage": "IXSCAN",
+              "nReturned": 7,
+              "executionTimeMillisEstimate": 0,
+              "works": 8,
+              "advanced": 7,
+              "needTime": 0,
+              "needYield": 0,
+              "saveState": 0,
+              "restoreState": 0,
+              "isEOF": 1,
+              "keyPattern": {
+                "_fts": "text",
+                "_ftsx": 1
+              },
+              "indexName": "ix_uc4_body_text",
+              "isMultiKey": true,
+              "isUnique": false,
+              "isSparse": false,
+              "isPartial": false,
+              "indexVersion": 2,
+              "direction": "backward",
+              "indexBounds": {},
+              "keysExamined": 7,
+              "seeks": 1,
+              "dupsTested": 7,
+              "dupsDropped": 0
+            }
+          }
+        }
+      }
+    },
+    "command": {
+      "find": "uc4_read_C",
+      "filter": {
+        "$text": {
+          "$search": "bitcoin"
+        }
+      },
+      "projection": {
+        "_id": 0,
+        "DOC_ID": 1
+      },
+      "$db": "dbms_ew_group02"
+    },
+    "serverInfo": {
+      "host": "MarcusVu",
+      "port": 27017,
+      "version": "7.0.12",
+      "gitVersion": "b6513ce0781db6818e24619e8a461eae90bc94fc"
+    },
+    "serverParameters": {
+      "internalQueryFacetBufferSizeBytes": 104857600,
+      "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+      "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+      "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+      "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+      "internalQueryProhibitBlockingMergeOnMongoS": 0,
+      "internalQueryMaxAddToSetBytes": 104857600,
+      "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+      "internalQueryFrameworkControl": "trySbeRestricted"
+    },
+    "ok": 1
+  }
+}

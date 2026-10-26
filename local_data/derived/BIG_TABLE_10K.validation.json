@@ -1,0 +1,107 @@
+{
+  "dataset_id": "BIG_TABLE_10K",
+  "passed": true,
+  "checked_at_local": "2026-10-05T23:03:36.697810+07:00",
+  "csv_path": "W:\\MYSELF\\HCMUT-university\\Senior\\HK_261\\DBMS\\BTL\\DBMS_EW_Group02\\local_data\\derived\\BIG_TABLE_10K.csv",
+  "csv_sha256": "7f41f9d5a36b932a25101cc8929aad540a3f9f76ae68b5d434a221b7d6d4f116",
+  "source_path": "W:\\MYSELF\\HCMUT-university\\Senior\\HK_261\\DBMS\\BTL\\DBMS_EW_Group02\\local_data\\source\\big table export.sql",
+  "source_size_bytes": 5705860718,
+  "validation_errors": [],
+  "profile": {
+    "row_count": 10000,
+    "min_id": 1,
+    "max_id": 10000,
+    "distinct_owner": 6,
+    "distinct_object_type": 15,
+    "distinct_object_id": 10000,
+    "null_counts": {
+      "ID": 0,
+      "OWNER": 0,
+      "OBJECT_NAME": 0,
+      "SUBOBJECT_NAME": 9704,
+      "OBJECT_ID": 0,
+      "DATA_OBJECT_ID": 7403,
+      "OBJECT_TYPE": 0,
+      "CREATED": 0,
+      "LAST_DDL_TIME": 0,
+      "TIMESTAMP": 0,
+      "STATUS": 0,
+      "TEMPORARY": 0,
+      "GENERATED": 0,
+      "SECONDARY": 0
+    },
+    "samples": [
+      {
+        "row_number": 1,
+        "row": {
+          "ID": "1",
+          "OWNER": "SYS",
+          "OBJECT_NAME": "TS$",
+          "SUBOBJECT_NAME": "\\N",
+          "OBJECT_ID": "16",
+          "DATA_OBJECT_ID": "6",
+          "OBJECT_TYPE": "TABLE",
+          "CREATED": "2021-09-28T00:00:00",
+          "LAST_DDL_TIME": "2021-09-28T00:00:00",
+          "TIMESTAMP": "2021-09-28:04:31:15",
+          "STATUS": "VALID",
+          "TEMPORARY": "N",
+          "GENERATED": "N",
+          "SECONDARY": "N"
+        }
+      },
+      {
+        "row_number": 5000,
+        "row": {
+          "ID": "5000",
+          "OWNER": "PUBLIC",
+          "OBJECT_NAME": "USER_PART_INDEXES",
+          "SUBOBJECT_NAME": "\\N",
+          "OBJECT_ID": "5386",
+          "DATA_OBJECT_ID": "\\N",
+          "OBJECT_TYPE": "SYNONYM",
+          "CREATED": "2021-09-28T00:00:00",
+          "LAST_DDL_TIME": "2021-09-28T00:00:00",
+          "TIMESTAMP": "2021-09-28:04:36:37",
+          "STATUS": "VALID",
+          "TEMPORARY": "N",
+          "GENERATED": "N",
+          "SECONDARY": "N"
+        }
+      },
+      {
+        "row_number": 10000,
+        "row": {
+          "ID": "10000",
+          "OWNER": "SYS",
+          "OBJECT_NAME": "DBA_JOINGROUPS",
+          "SUBOBJECT_NAME": "\\N",
+          "OBJECT_ID": "10808",
+          "DATA_OBJECT_ID": "\\N",
+          "OBJECT_TYPE": "VIEW",
+          "CREATED": "2021-09-28T00:00:00",
+          "LAST_DDL_TIME": "2021-09-28T00:00:00",
+          "TIMESTAMP": "2021-09-28:04:39:59",
+          "STATUS": "VALID",
+          "TEMPORARY": "N",
+          "GENERATED": "N",
+          "SECONDARY": "N"
+        }
+      }
+    ],
+    "source_sample_checks": [
+      {
+        "row_number": 1,
+        "matches_oracle_source": true
+      },
+      {
+        "row_number": 5000,
+        "matches_oracle_source": true
+      },
+      {
+        "row_number": 10000,
+        "matches_oracle_source": true
+      }
+    ]
+  }
+}

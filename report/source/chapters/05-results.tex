@@ -1,0 +1,67 @@
+\chapter{Discussion and Conclusion}
+\label{ch:conclusion}
+
+\section{Answering the Course Questions}
+Having defined six real database workloads (Chapter~\ref{ch:solutions}), established our methodology (Chapter~\ref{ch:methodology}), and analyzed the experimental results (Chapter~\ref{ch:results}), we can now answer the core assignment questions directly.
+
+\subsection{What Indexing Structures and Techniques Were Studied, and How Are They Implemented?}
+Our study evaluated two categories of modern indexing mechanisms across SQL Server 2025 and MongoDB 7.0:
+\begin{enumerate}
+\item \textbf{Specialized B-Tree Design Techniques (UC1, UC2, UC3, UC6):}
+  \begin{itemize}
+  \item \emph{Compound Indexes (UC1)} store multiple attributes in lexicographical order inside a single B+ tree / B-tree, allowing one index to narrow multi-column searches and return pre-sorted rows without an explicit \texttt{Sort} stage.
+  \item \emph{Filtered and Partial Indexes (UC2)} attach a compile-time predicate (\texttt{WHERE TEMPORARY = N'Y'} in SQL Server; \texttt{partialFilterExpression} in MongoDB) so that only qualifying rows are inserted into the B-tree.
+  \item \emph{Covering Indexes (UC3)} embed extra projected columns directly inside the index so the engine never jumps back to the base table. SQL Server implements this cleanly via \texttt{INCLUDE (...)} (storing extra columns only at the leaf level), whereas MongoDB requires appending all projected columns as compound index keys and excluding \texttt{\_id}.
+  \item \emph{Multikey vs.\ Normalized Child Indexes (UC6)} index multi-valued attributes. MongoDB automatically turns an index on an array field (\texttt{\{tags: 1\}}) into a multikey index with one B-tree entry per distinct array element, whereas SQL Server stores tags in a normalized child table and adds an inverted secondary index on \texttt{(TAG, PARENT\_ID)}.
+  \end{itemize}
+\item \textbf{Alternative Physical Indexing Structures Beyond B-Trees (UC4, UC5):}
+  \begin{itemize}
+  \item \emph{Inverted Full-Text and Text Indexes (UC4)} tokenize natural-language prose into word stems and posting lists of document IDs. SQL Server maintains its full-text catalog \emph{asynchronously} in the background (\texttt{CHANGE\_TRACKING = AUTO}), whereas MongoDB updates its text index \emph{synchronously} inside every write transaction.
+  \item \emph{Clustered Columnstore Indexes (UC5)} replace row-oriented pages in SQL Server with compressed column segments inside rowgroups. The measured aggregate read only required columns; both rowstore and columnstore aggregate plans used batch execution. Small writes entered a delta rowgroup and delete bitmap.
+  \end{itemize}
+\end{enumerate}
+
+\subsection{Which Workloads Benefited, Which Did Not, and What Were the Trade-Offs?}
+An index is not a universal speed button; it helps only when the query predicate, sort order, projection, and selectivity match the index's physical access path:
+\begin{itemize}
+\item \textbf{Workloads That Benefited Strongly:} Full-key and prefix+sort queries on a compound index (\texttt{U1a}, \texttt{U1d} in UC1); queries targeting a rare $0.24\%$ flag on a filtered/partial index (\texttt{TEMPORARY = 'Y'} in UC2, saving $>98\%$ storage); medium-range multi-column projections on a covering index (UC3); single-word and phrase searches over prose (UC4, up to $107.8\times$ equal-result speedup in MongoDB and $3.3$--$4.1$\,s down to $14$--$23$\,ms in SQL Server); table-wide \texttt{GROUP BY} aggregations on a columnstore index (UC5, $2.90\times$ faster and $23.15:1$ compression); and selective tag membership queries (UC6, up to $13.85\times$ faster).
+\item \textbf{Workloads That Did Not Benefit (or Regressed):}
+  \begin{enumerate}
+  \item \emph{Unselective single-key index on skewed data:} Indexing \texttt{OWNER} alone in MongoDB (UC1 B) made \texttt{OWNER = 'SYS'} queries nearly $2\times$ slower than a collection scan ($462.8$\,ms vs.\ $241.0$\,ms) due to $71,802$ random document fetches.
+  \item \emph{Missing leading key or excessive lookups:} Omitting \texttt{OWNER} (\texttt{U1c}) prevented B-tree seeks in both DBMSs, and matching $3,405$ non-covered rows (\texttt{U1b}) caused SQL Server to ignore the compound index and scan the heap.
+  \item \emph{Outside-subset and parameterized filtered queries:} Queries for \texttt{TEMPORARY = 'N'} or parameterized \texttt{TEMPORARY = @p} in SQL Server could not use the \texttt{'Y'}-only index (UC2) and fell back to full scans.
+  \item \emph{Over-covering small queries:} Adding four covering columns in UC3 inflated 1M index size by $5.94\times$ to $10.47\times$ while giving no latency benefit on 1-row point lookups (and slowing down MongoDB 100K Small from $2.83$ to $4.40$\,ms).
+  \end{enumerate}
+\end{itemize}
+
+\section{Engineering Decision Guide}
+Table~\ref{tab:decision-guide} gives the fastest route from workload to a defensible index choice. The measured costs and counterexamples remain in Chapter~\ref{ch:results}.
+
+\begin{table}[H]
+\centering\small
+\caption{Index choices supported by the accepted workloads.}
+\label{tab:decision-guide}
+\begin{tabularx}{\linewidth}{@{}l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X@{}}
+\toprule
+Index & Best suited for & Main measured benefit & Main limitation\\
+\midrule
+UC1 Compound & Leading-key filters and matching sort & U1a: 3.42$\times$ SQL; 103$\times$ Mongo vs A & Missing leading key cannot seek; common prefix may scan\\
+UC2 Filtered/partial & Rare, known Y subset & 1M Y: 15.4$\times$ SQL; 395$\times$ Mongo vs A & N needs another path; unsafe SQL parameter may scan\\
+UC3 Covering & Medium ranges returning several columns & 1M medium: 1.54$\times$ SQL; 1.19$\times$ Mongo vs B & 1M index is 5.94$\times$ to 10.47$\times$ wider\\
+UC4 Full-text/text & Linguistic word and phrase search & SQL climate 3,983.5 to 17.40 ms; IDs differ & Substring semantics differ; Mongo inserts fell 95.3\%\\
+UC5 Columnstore & SQL analytical aggregation & 2.90$\times$ faster; 219.0 to 9.46 MiB & 49.9\% lower small-insert throughput; point query still scans\\
+UC6 Multikey/child & Selective tag membership & Two rare tags: 5.39$\times$ SQL; 13.85$\times$ Mongo & Mongo two-tag probe still FETCHes; more index writes\\
+\bottomrule
+\end{tabularx}
+\par\smallskip\scriptsize\raggedright Ratios compare configurations inside one engine and query. UC4 SQL values are latencies, not a same-result speedup.\par
+\end{table}
+
+\section{Methodological Limitations}
+To keep our conclusions scientifically honest, we highlight four boundaries of our experimental setup:
+\begin{enumerate}
+\item \textbf{Single-Machine Local Runs:} All measurements come from one local workstation (2 warmups + 25 repetitions per read query; 10--20 batches per write test; 1 observation per index build and freshness probe). They demonstrate deterministic access-path and physical work changes rather than multi-server confidence intervals.
+\item \textbf{Server-Side Result Consumption in SQL Catalog Scripts:} In UC1, UC2, UC3, and UC5, SQL Server timed batches materialized results into a temporary table or JSON accumulator so that every projected column was touched without streaming rows over TCP. This adds work whose cost may vary with result size and configuration. Ratios are descriptive within one DBMS; timing boundaries still differ between SQL Server and MongoDB.
+\item \textbf{Unindexed \texttt{ID} Lookup During Updates in UC1--UC3 and UC5:} Because disposable copies in UC1--UC3 and UC5 had no secondary index on \texttt{ID}, \texttt{UPDATE ... WHERE ID IN (...)} timings include the cost of scanning the table to find the target rows. In contrast, UC4 (\texttt{DOC\_ID} PK) and UC6 (\texttt{PARENT\_ID} PK / unique index) isolate indexed write maintenance directly.
+\item \textbf{Sub-Millisecond Timer Resolution Floor:} On selective queries in UC3 (\texttt{POINT}, 1M \texttt{SMALL}) and UC6 (\texttt{ONE\_TEMP\_Y}), SQL Server C finished in under $0.5$\,ms, recording a median of \texttt{0.00\,ms}. For those cells, we evaluate improvement via physical page reads ($150 \rightarrow 2$ reads) and p95 latency rather than dividing by zero.
+\end{enumerate}
+\FloatBarrier

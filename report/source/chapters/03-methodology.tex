@@ -1,0 +1,100 @@
+\chapter{Datasets and Experimental Methodology}
+\label{ch:methodology}
+
+To evaluate UC1--UC6 fairly, we need datasets whose column types and value distributions match the workload problems defined in Chapter~\ref{ch:solutions}, along with a controlled experimental protocol that separates read timing, plan inspection, and write maintenance.
+
+\section{Three Datasets and Exploratory Data Analysis (EDA)}
+Our Phase 1 data audit showed that a single table cannot honestly test all six index types. Specifically, our main catalog table (\texttt{BIG\_TABLE}) contains short object identifiers like \texttt{TS\$} rather than natural-language paragraphs, making it unsuitable for full-text search (UC4), and it contains only scalar columns without arrays for multikey indexing (UC6). We therefore use three datasets (Table~\ref{tab:datasets}). The distributions explain which keys should be selective:
+
+\begin{enumerate}
+\item \textbf{Corpus 1 --- Catalog Metadata (\texttt{BIG\_TABLE} at 10K, 100K, and 1M rows):} Used for \textbf{UC1} (100K), \textbf{UC2} (100K and 1M), \textbf{UC3} (100K and 1M), and \textbf{UC5} (1M). Each row describes a database object across 14 columns: \texttt{ID}, \texttt{OBJECT\_ID}, \texttt{DATA\_OBJECT\_ID} (integers); \texttt{OWNER}, \texttt{OBJECT\_NAME}, \texttt{SUBOBJECT\_NAME}, \texttt{OBJECT\_TYPE}, \texttt{TIMESTAMP}, \texttt{STATUS} (strings); \texttt{CREATED}, \texttt{LAST\_DDL\_TIME} (timestamps); and \texttt{TEMPORARY}, \texttt{GENERATED}, \texttt{SECONDARY} (1-character flags).
+\item \textbf{Corpus 2 --- English News Articles (\texttt{uc4\_seed\_10k}, 10,000 articles):} Used for \textbf{UC4}. Sampled deterministically from 5,000 real and 5,000 fake news articles, with schema \texttt{(DOC\_ID, TITLE, BODY, SUBJECT, RAW\_DATE, SOURCE\_FILE, SOURCE\_ROW)}.
+\item \textbf{Corpus 3 --- Parent Objects and Categorical Tags (\texttt{parents\_10k.jsonl}, 10,000 parents / 30,471 tags):} Used for \textbf{UC6}. Built deterministically from the 10K catalog table by encoding each object's real metadata into 3 to 5 distinct tags (\texttt{owner:<OWNER>}, \texttt{type:<OBJECT\_TYPE>}, \texttt{temporary:<TEMPORARY>}, plus optional \texttt{generated:Y} and \texttt{subobject:present}).
+\end{enumerate}
+
+\begin{table}[H]
+\centering\small
+\caption{Distributions that determine selectivity, text-search work, and multikey write cost.}
+\label{tab:datasets}
+\begin{tabularx}{\linewidth}{@{}l l >{\raggedright\arraybackslash}X@{}}
+\toprule
+Dataset & Scale & Workload-relevant distribution\\
+\midrule
+Catalog owner (UC1) & 100K & \texttt{SYS}: 71,802 rows (71.8\%); \texttt{CTXSYS}: 398 rows (0.40\%).\\
+Catalog flag (UC2) & 100K / 1M & \texttt{TEMPORARY='Y'}: 254 rows (0.254\%) / 2,405 rows (0.241\%).\\
+Catalog type (UC5) & 1M & \texttt{OBJECT\_TYPE} has 35 distinct groups.\\
+News BODY (UC4) & 10K & Median: 371 words (2,213.5 characters); p95: 918 words (5,579 characters); SQL Server uses \texttt{NVARCHAR(MAX)}.\\
+Object tags (UC6) & 10K parents & 30,471 memberships (3.05 per parent): 9,631 parents have 3 tags, 267 have 4, and 102 have 5.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The skew matters more than the exact row labels. In a sample of 1,000 catalog rows at 100K scale, about 718 belong to \texttt{SYS}, but only about 3 have \texttt{TEMPORARY='Y'}. An \texttt{OWNER}-only index can therefore retrieve far too many candidates for UC1, while a Y-only index can remain tiny for UC2. Long news bodies motivate token indexing in UC4; repeated type values motivate column compression in UC5; several tags per parent explain the extra index entries in UC6.
+
+Table~\ref{tab:sample-records} shows representative records from each dataset. UC4 and UC6 have full-row cross-engine seed parity checks; UC1--UC3 checked query-level counts and fingerprints within each engine (exact file sizes and SHA-256 hashes are listed in Appendix~\ref{app:repro}).
+
+\begin{table}[H]
+\centering\small
+\caption{Representative records across the three experimental datasets.}
+\label{tab:sample-records}
+\begin{tabularx}{\linewidth}{@{}l >{\raggedright\arraybackslash}X@{}}
+\toprule
+Dataset & Representative Record Content\\
+\midrule
+\textbf{Corpus 1} (\texttt{BIG\_TABLE}) & \texttt{ID = 1, OWNER = 'SYS', OBJECT\_NAME = 'TS\$', OBJECT\_TYPE = 'TABLE', OBJECT\_ID = 16, TEMPORARY = 'N'} (matched by UC1 \texttt{U1a}/\texttt{U1c} and UC3 Point lookup).\\
+\textbf{Corpus 1} (\texttt{BIG\_TABLE}) & \texttt{ID = 127, OWNER = 'SYS', OBJECT\_NAME = 'EDITIONING\_TYPES\$', OBJECT\_TYPE = 'TABLE', OBJECT\_ID = 131, TEMPORARY = 'Y'} (rare active row matched in UC2 and UC6).\\
+\textbf{Corpus 2} (News Prose) & \texttt{DOC\_ID = 1, TITLE = "Donald Trump Sends Out...", BODY = "Donald Trump just couldn't wish all Americans..." (495 words)}.\\
+\textbf{Corpus 3} (Object Tags) & \texttt{PARENT\_ID = 127, OWNER = "SYS", OBJECT\_TYPE = "TABLE", tags = ["owner:SYS", "temporary:Y", "type:TABLE"]} (stored as an array in MongoDB; 3 rows in \texttt{UC6\_Tag} in SQL Server).\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{A / B / C Index Configurations}
+To make comparisons systematic, every experiment uses up to three configurations on isolated working copies of the data:
+\begin{itemize}
+\item \textbf{Configuration A (Baseline):} No optional secondary index. Queries run on a clean Heap in SQL Server (or with only the primary key in UC4/UC6) and on a collection with only the default \texttt{\_id\_} index in MongoDB.
+\item \textbf{Configuration B (Conventional Alternative):} A standard index that a developer might try first---a single-column index on \texttt{(OWNER)} in UC1, a full index on all rows in UC2, a narrow index on \texttt{(OBJECT\_ID)} in UC3, or a rowstore heap in UC5. (In UC4 and UC6, B is omitted because a standard B-tree on the full article text or unindexed child PK is already covered by the baseline comparison).
+\item \textbf{Configuration C (Target Index):} The specialized indexing structure or design technique tailored to the use case.
+\end{itemize}
+
+Table~\ref{tab:abc-configs} lists the exact index definitions for A, B, and C across all six use cases.
+
+\begin{table}[H]
+\centering\footnotesize
+\caption{Summary of A, B, and C index configurations across SQL Server 2025 and MongoDB 7.0.}
+\label{tab:abc-configs}
+\begin{tabularx}{\linewidth}{@{}l l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X@{}}
+\toprule
+UC & Cfg & SQL Server 2025 (\texttt{DBMS\_EW\_Group02}) & MongoDB 7.0.12 (\texttt{dbms\_ew\_group02})\\
+\midrule
+UC1 & A / B / C & \textbf{A:} Heap $\mid$ \textbf{B:} \texttt{INDEX(OWNER)} $\mid$ \textbf{C:} \texttt{INDEX(OWNER, OBJECT\_TYPE, OBJECT\_ID)} & \textbf{A:} \texttt{\_id\_} $\mid$ \textbf{B:} \texttt{\{OWNER: 1\}} $\mid$ \textbf{C:} \texttt{\{OWNER: 1, OBJECT\_TYPE: 1, OBJECT\_ID: 1\}}\\
+UC2 & A / B / C & \textbf{A:} Heap $\mid$ \textbf{B:} \texttt{INDEX(OBJECT\_TYPE, OBJECT\_ID) INCLUDE(TEMPORARY)} $\mid$ \textbf{C:} Same key and INCLUDE, filtered by \texttt{TEMPORARY=N'Y'} & \textbf{A:} \texttt{\_id\_} $\mid$ \textbf{B:} \texttt{\{OBJECT\_TYPE: 1, OBJECT\_ID: 1, TEMPORARY: 1\}} $\mid$ \textbf{C:} Same keys with \texttt{partialFilterExpression: \{TEMPORARY: "Y"\}}\\
+UC3 & A / B / C & \textbf{A:} Heap $\mid$ \textbf{B:} \texttt{INDEX(OBJECT\_ID)} $\mid$ \textbf{C:} \texttt{INDEX(OBJECT\_ID) INCLUDE(ID, OWNER, OBJECT\_NAME, OBJECT\_TYPE)} & \textbf{A:} \texttt{\_id\_} $\mid$ \textbf{B:} \texttt{\{OBJECT\_ID: 1\}} $\mid$ \textbf{C:} \texttt{\{OBJECT\_ID: 1, ID: 1, OWNER: 1, OBJECT\_NAME: 1, OBJECT\_TYPE: 1\}}\\
+UC4 & A / C & \textbf{A:} Clustered PK \texttt{(DOC\_ID)} only $\mid$ \textbf{C:} PK + \texttt{FULLTEXT INDEX ON (BODY LANGUAGE 1033) WITH CHANGE\_TRACKING = AUTO} & \textbf{A:} \texttt{\_id\_} + unique \texttt{\{DOC\_ID: 1\}} $\mid$ \textbf{C:} Same + \texttt{\{BODY: "text"\}} (\texttt{default\_language: "english"})\\
+UC5 & B / C & \textbf{B:} Rowstore Heap (14 columns) $\mid$ \textbf{C:} \texttt{CLUSTERED COLUMNSTORE INDEX} & \emph{SQL Server physical layout study only}\\
+UC6 & A / C & \textbf{A:} \texttt{UC6\_Parent(PK)} + \texttt{UC6\_Tag} with \texttt{PK(PARENT\_ID, TAG)} $\mid$ \textbf{C:} Same + \texttt{INDEX(TAG, PARENT\_ID)} & \textbf{A:} \texttt{\_id\_} + unique \texttt{\{PARENT\_ID: 1\}} $\mid$ \textbf{C:} Same + Multikey \texttt{\{tags: 1\}}\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Experimental Workflow, Metrics, and Fairness Rules}
+All benchmarks were run locally on the same workstation running \textbf{Microsoft SQL Server 2025 Enterprise Developer Edition} (64-bit, build \texttt{17.0.1145.4}, compatibility level 170, accepted benchmark scripts executed natively via \texttt{sqlcmd} or SSMS) and \textbf{MongoDB Community Server 7.0.12} (WiredTiger storage engine, accepted benchmark scripts executed via \texttt{mongosh 2.13.0}). Every experiment follows five strict rules:
+\begin{enumerate}
+\item \textbf{Disposable Working Copies:} Because the pre-loaded reference tables already had demonstration indexes attached, every script first clones the source data into fresh disposable copies (\texttt{UC*\_Read\_*} and \texttt{UC*\_Write\_*}) stripped of optional indexes. Read and write tests use separate copies so writes never alter read row counts.
+\item \textbf{Warmups and 25 Timed Repetitions:} Each read query runs 2 untimed warmup executions followed by 25 timed executions. Every run materializes all matched rows and verifies the returned row count (or exact ID list in UC4/UC6). We report the \textbf{median (p50)} as the primary latency metric and include the \textbf{95th percentile (p95)} when tail variance matters.
+\item \textbf{Separate Actual Execution Plan Capture:} Collecting XML or JSON execution plans during timed runs would distort latency. Instead, after the 25 timed runs finish, we run a separate diagnostic pass using \texttt{SET STATISTICS IO, TIME, XML ON} in SQL Server (saving \texttt{.sqlplan} files) and \texttt{explain("executionStats")} in MongoDB.
+\item \textbf{Build, Storage, and Write Maintenance Probes:} We measure index creation time (ms), index size on disk (\texttt{sys.dm\_db\_partition\_stats} used bytes in SQL Server; \texttt{indexSizes} bytes in MongoDB), and batch \texttt{INSERT}/\texttt{UPDATE} performance (10 to 20 batches per configuration). In UC4, we also run a freshness probe that updates one article with a unique token and polls until the full-text/text index finds it.
+\item \textbf{Strict Intra-DBMS Comparison Rule:} SQL Server and MongoDB use different query languages, client drivers, timing boundaries, and work counters (\textbf{8\,KB logical page reads} in SQL Server vs.\ \textbf{keys/documents examined} in MongoDB). We therefore compare \textbf{A vs.\ B vs.\ C within the same DBMS}, never treating raw SQL milliseconds against raw MongoDB milliseconds as a cross-engine speed contest.
+\end{enumerate}
+
+\section{Summary of Pre-Benchmark Expectations}
+Before examining the data in Chapter~\ref{ch:results}, we state our core expectations:
+\begin{itemize}
+\item \textbf{UC1 (Compound):} Config C should accelerate full-key (\texttt{U1a}) and sorted (\texttt{U1d}) queries and eliminate the \texttt{Sort} operator on \texttt{U1d}, but queries missing the leading \texttt{OWNER} column (\texttt{U1c}) should not be able to perform a prefix seek.
+\item \textbf{UC2 (Filtered/Partial):} Config C should be over $98\%$ smaller than B and fast on \texttt{TEMPORARY = 'Y'}, but must fall back to a full scan on \texttt{TEMPORARY = 'N'}.
+\item \textbf{UC3 (Covering):} Config C should eliminate \texttt{RID Lookup} and \texttt{FETCH} operations on range queries, at the cost of a much larger index footprint than B.
+\item \textbf{UC4 (Full-Text/Text):} Config C should reduce search time from seconds/hundreds of milliseconds to tens of milliseconds, but word breaking and stemming will change matched IDs on some terms, and synchronous indexing in MongoDB should slow down writes much more than asynchronous indexing in SQL Server.
+\item \textbf{UC5 (Columnstore):} Config C should compress the 1M table and reduce work for \texttt{GROUP BY} by reading only required columns, while slowing down small-batch \texttt{INSERT}s that land in the delta store. Execution mode must be checked in both plans.
+\item \textbf{UC6 (Multikey/Child):} Config C should speed up selective tag lookups in both engines, while two-tag \texttt{\$all} queries in MongoDB will still need to fetch candidate documents matching the first tag to verify the second tag.
+\end{itemize}
+\FloatBarrier

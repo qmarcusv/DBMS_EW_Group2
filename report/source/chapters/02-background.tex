@@ -1,0 +1,277 @@
+\chapter{Use Cases and Indexing Solutions}
+\label{ch:solutions}
+\input{source/chapters/02-diagrams}
+
+This chapter explains the six database problems we want to solve, the queries that represent them, why a specific indexing mechanism is selected for each workload, and what theoretical trade-off that index introduces. No benchmark numbers are presented yet; our goal here is to establish the engineering logic before running experiments.
+
+\section{UC1: Multi-Column Lookups and Sorting \texorpdfstring{$\rightarrow$}{->} Compound B-Tree Index}
+
+\ReportBlock{Problem}
+In large metadata catalogs, users rarely search by a single column. Instead, they filter objects by combinations of \texttt{OWNER}, \texttt{OBJECT\_TYPE}, and \texttt{OBJECT\_ID}, or ask for all objects of an owner sorted by \texttt{(OBJECT\_TYPE, OBJECT\_ID)}. If we only build a single-column index on \texttt{OWNER}, any query for a common owner (such as \texttt{OWNER = 'SYS'}) still scans tens of thousands of index entries and must sort the results afterward.
+
+\Needspace{15\baselineskip}
+\ReportBlock{Representative Query}
+The full-key lookup (U1a) projects the same four fields in both systems. The other variants are U1b (two-column prefix), U1c (missing \texttt{OWNER}), and U1d (\texttt{OWNER=CTXSYS} sorted by \texttt{OBJECT\_TYPE, OBJECT\_ID}).
+\ReportBlock{SQL Server --- U1a}
+\begin{SQLCode}
+SELECT ID, OWNER, OBJECT_TYPE, OBJECT_ID
+FROM dbo.UC1_Bench_100K
+WHERE OWNER = N'SYS' AND OBJECT_TYPE = N'TABLE'
+  AND OBJECT_ID = 16;
+\end{SQLCode}
+\ReportBlock{MongoDB --- U1a}
+\begin{MongoCode}
+db.uc1_bench_100K.find(
+  {OWNER: 'SYS', OBJECT_TYPE: 'TABLE', OBJECT_ID: 16},
+  {_id: 0, ID: 1, OWNER: 1, OBJECT_TYPE: 1, OBJECT_ID: 1}
+);
+\end{MongoCode}
+
+\ReportBlock{Chosen Index}
+We compare a conventional single-column index on \texttt{(OWNER)} (\textbf{Config B}) against a \textbf{Compound B-Tree Index} on \texttt{(OWNER, OBJECT\_TYPE, OBJECT\_ID)} (\textbf{Config C}) \cite{mssqlindex,mongocompound}. Figure~\ref{fig:diag-uc1} shows its lexicographic order: entries are grouped first by \texttt{OWNER}, then by \texttt{OBJECT\_TYPE}, then by \texttt{OBJECT\_ID}.
+
+\ReportBlock{Representative index definitions --- Config C}
+\begin{SQLCode}
+CREATE INDEX IX_UC1_OwnerTypeObjectId
+ON dbo.UC1_Bench_100K (OWNER, OBJECT_TYPE, OBJECT_ID);
+\end{SQLCode}
+\begin{MongoCode}
+db.uc1_bench_100K.createIndex(
+  {OWNER: 1, OBJECT_TYPE: 1, OBJECT_ID: 1},
+  {name: 'ix_uc1_owner_type_object_id'}
+);
+\end{MongoCode}
+
+\ReportBlock{Why It Works}
+When a query provides the leading columns (\texttt{U1a}, \texttt{U1b}), the DBMS can seek directly to that narrow range in the tree. When a query filters by the first column (\texttt{OWNER = 'CTXSYS'}) and sorts by the remaining columns (\texttt{U1d}), the leaf pages are already stored in the exact \texttt{ORDER BY} sequence, eliminating the blocking \texttt{Sort} operator. However, if a query omits the first column \texttt{OWNER} (\texttt{U1c}), the matching \texttt{OBJECT\_TYPE = 'TABLE'} entries are scattered across different owners, so the DBMS cannot perform a single range seek. \ReportBlock{Trade-Off}
+The main trade-off is that storing three columns in every index entry makes the index larger than a single-column index and adds overhead whenever any of the three columns is modified.
+
+\UCOneDiagram
+
+\section{UC2: Skewed Active-Flag Queries \texorpdfstring{$\rightarrow$}{->} Filtered and Partial Indexes}
+
+\ReportBlock{Problem}
+Operational tables often include a status or flag column where almost all rows are inactive (\texttt{TEMPORARY = 'N'}, $99.76\%$) and only a tiny fraction are active (\texttt{TEMPORARY = 'Y'}, $0.24\%$). Application dashboards frequently query the active \texttt{'Y'} subset, while batch jobs occasionally query \texttt{'N'}. Building a full index across the entire table wastes over $99\%$ of index space on \texttt{'N'} rows that active-subset queries never touch.
+
+\Needspace{15\baselineskip}
+\ReportBlock{Representative Query}
+Both systems return \texttt{OBJECT\_TYPE, OBJECT\_ID, TEMPORARY} for the rare Y subset. The N variant changes only the flag; a separate SQL probe passes it as a parameter.
+\ReportBlock{SQL Server --- Y subset}
+\begin{SQLCode}
+SELECT OBJECT_TYPE, OBJECT_ID, TEMPORARY
+FROM dbo.UC2_Bench_1000K
+WHERE TEMPORARY = N'Y' AND OBJECT_TYPE = N'TABLE'
+  AND OBJECT_ID BETWEEN 1 AND 10000;
+\end{SQLCode}
+\ReportBlock{MongoDB --- Y subset}
+\begin{MongoCode}
+db.uc2_bench_1000K.find(
+  {TEMPORARY: 'Y', OBJECT_TYPE: 'TABLE',
+   OBJECT_ID: {$gte: 1, $lte: 10000}},
+  {_id: 0, OBJECT_TYPE: 1, OBJECT_ID: 1, TEMPORARY: 1}
+);
+\end{MongoCode}
+
+\ReportBlock{Chosen Index}
+We compare a full composite index on all rows (\textbf{Config B}) against a \textbf{Filtered Index} in SQL Server (\texttt{WHERE TEMPORARY = N'Y'}) and a \textbf{Partial Index} in MongoDB (\texttt{partialFilterExpression: \{TEMPORARY: "Y"\}}) (\textbf{Config C}) \cite{mssqlfiltered,mongopartial}. As illustrated in Figure~\ref{fig:diag-uc2}, the DBMS inserts a row into Index C only if it satisfies \texttt{TEMPORARY = 'Y'}.
+
+\ReportBlock{Representative index definitions --- Config C}
+\begin{SQLCode}
+CREATE INDEX IX_UC2_Filtered ON dbo.UC2_Bench_1000K
+  (OBJECT_TYPE, OBJECT_ID) INCLUDE (TEMPORARY)
+WHERE TEMPORARY = N'Y';
+\end{SQLCode}
+\begin{MongoCode}
+db.uc2_bench_1000K.createIndex(
+  {OBJECT_TYPE: 1, OBJECT_ID: 1, TEMPORARY: 1},
+  {name: 'ix_uc2_partial',
+   partialFilterExpression: {TEMPORARY: 'Y'}}
+);
+\end{MongoCode}
+
+\ReportBlock{Why It Works}
+Because only $0.24\%$ of rows qualify, Index C is much smaller than a full index and does not add a new entry for a row that remains \texttt{'N'}. \ReportBlock{Trade-Off}
+The trade-off is strict query eligibility: if a query asks for \texttt{TEMPORARY = 'N'}, Index C contains none of the needed rows and the DBMS must fall back to a full table scan. A parameterized SQL predicate may not prove Y-only eligibility to the optimizer. Both cached and recompiled parameter probes scanned in this local run; the actual plan must be checked.
+
+
+
+\UCTwoDiagram
+
+\section{UC3: Range Projections \texorpdfstring{$\rightarrow$}{->} Covering Index (\texttt{INCLUDE} vs.\ Compound Keys)}
+
+\ReportBlock{Problem}
+Applications rarely select only the column in the \texttt{WHERE} clause; they usually project several descriptive columns for display. When a query filters by a range on \texttt{OBJECT\_ID} and returns four other columns, a narrow index on \texttt{(OBJECT\_ID)} can find the matching row pointers, but it must jump back to the base table (\texttt{RID Lookup} in SQL Server or \texttt{FETCH} in MongoDB) once for every matched row. When hundreds or thousands of rows match, these random base-table lookups become slower than scanning the entire table.
+
+\Needspace{15\baselineskip}
+\ReportBlock{Representative Query}
+At 1M rows, the medium range contains 2,775 results; the 100K medium bound is 1,000. The point query uses \texttt{OBJECT\_ID=16} with \texttt{ID=1}; small ranges end at 50 (100K) or 5 (1M).
+\ReportBlock{SQL Server --- 1M medium range}
+\begin{SQLCode}
+SELECT ID, OWNER, OBJECT_NAME, OBJECT_TYPE
+FROM dbo.UC3_Bench_1000K
+WHERE OBJECT_ID BETWEEN 1 AND 200;
+\end{SQLCode}
+\ReportBlock{MongoDB --- 1M medium range}
+\begin{MongoCode}
+db.uc3_bench_1000K.find(
+  {OBJECT_ID: {$gte: 1, $lte: 200}},
+  {_id: 0, ID: 1, OWNER: 1,
+   OBJECT_NAME: 1, OBJECT_TYPE: 1}
+);
+\end{MongoCode}
+
+\ReportBlock{Chosen Index}
+We compare a narrow index on \texttt{(OBJECT\_ID)} (\textbf{Config B}) against a \textbf{Covering Index} (\textbf{Config C}) that contains all columns required by the query \cite{mssqlinclude,mongoexplain}. Figure~\ref{fig:diag-uc3} shows the saved base-row lookup. SQL Server stores the four included columns at the leaf level, keeping upper branch nodes narrow. MongoDB appends all returned fields as compound keys and excludes \texttt{\_id} from the projection. The native definitions below show the distinct mechanisms.
+
+\ReportBlock{Representative index definitions --- Config C}
+\begin{SQLCode}
+CREATE INDEX IX_UC3_Cover ON dbo.UC3_Bench_1000K
+  (OBJECT_ID) INCLUDE (ID, OWNER, OBJECT_NAME, OBJECT_TYPE);
+\end{SQLCode}
+\begin{MongoCode}
+db.uc3_bench_1000K.createIndex(
+  {OBJECT_ID: 1, ID: 1, OWNER: 1,
+   OBJECT_NAME: 1, OBJECT_TYPE: 1},
+  {name: 'ix_uc3_cover'}
+);
+\end{MongoCode}
+
+\ReportBlock{Why It Works}
+Because the index leaves already hold every requested column, the DBMS answers the query directly from the index without touching the base table (\texttt{RID Lookup} disappears in SQL Server; \texttt{totalDocsExamined = 0} in MongoDB). \ReportBlock{Trade-Off}
+The trade-off is a substantial increase in index size, because four wide columns are duplicated inside the index, and any update to those extra columns must now also update the index.
+
+\UCThreeDiagram
+
+\section{UC4: Natural-Language Search over Prose \texorpdfstring{$\rightarrow$}{->} Full-Text and Text Indexes}
+
+\ReportBlock{Problem}
+Standard B-trees sort strings from their first character. They cannot efficiently find a word or phrase buried in the middle of a multi-paragraph news article. Without a specialized index, searching article text (\texttt{BODY}) requires scanning every character of every document using \texttt{LIKE '\%term\%'} or \texttt{\$regex}.
+
+\Needspace{15\baselineskip}
+\ReportBlock{Representative Query}
+The six searches comprise three words (election, climate, bitcoin) and three phrases (white house, climate change, stock market). The phrase below shows substring A and linguistic C over the same \texttt{BODY} field; their returned ID sets need not match.
+\ReportBlock{SQL Server --- phrase baseline and full-text}
+\begin{SQLCode}
+SELECT DOC_ID FROM dbo.UC4_Read_A
+WHERE BODY LIKE N'%climate change%';
+SELECT DOC_ID FROM dbo.UC4_Read_C
+WHERE CONTAINS(BODY, '"climate change"', LANGUAGE 1033);
+\end{SQLCode}
+\ReportBlock{MongoDB --- phrase baseline and text search}
+\begin{MongoCode}
+db.uc4_read_A.find(
+  {BODY: {$regex: 'climate change', $options: 'i'}},
+  {_id: 0, DOC_ID: 1}
+);
+db.uc4_read_C.find(
+  {$text: {$search: '"climate change"'}},
+  {_id: 0, DOC_ID: 1}
+);
+\end{MongoCode}
+
+\ReportBlock{Chosen Index}
+We build a \textbf{Full-Text Index} in SQL Server and a \textbf{Text Index} in MongoDB (\textbf{Config C}) \cite{mssqlfts,mongotext}. Unlike a B-tree over the whole string, these indexes map tokens to posting lists of document IDs (Figure~\ref{fig:diag-uc4}). Language processing may remove common words or stem related forms; exact behavior depends on the DBMS and query.
+
+\ReportBlock{Representative index definitions --- Config C}
+The SQL full-text key and catalog are created by the accepted setup script before the index statement.
+\begin{SQLCode}
+CREATE FULLTEXT INDEX ON dbo.UC4_Read_C (BODY LANGUAGE 1033)
+KEY INDEX PK_UC4_Read_C ON UC4_FT_Read
+WITH CHANGE_TRACKING = AUTO, STOPLIST = SYSTEM;
+\end{SQLCode}
+\begin{MongoCode}
+db.uc4_read_C.createIndex(
+  {BODY: 'text'},
+  {name: 'ix_uc4_body_text', default_language: 'english'}
+);
+\end{MongoCode}
+
+\ReportBlock{Why It Works}
+Looking up a word in an inverted index jumps directly to its posting list in milliseconds instead of scanning millions of characters. \ReportBlock{Trade-Off}
+Two costs matter:
+\begin{enumerate}
+\item \textbf{Semantic Difference vs.\ Substring Matching:} \texttt{LIKE '\%election\%'} matches any character substring (such as \emph{re-election}), whereas linguistic search matches whole words or stems. Thus, baseline and indexed queries do not always return the exact same set of document IDs.
+\item \textbf{Async vs.\ Sync Write Maintenance:} Parsing an article adds work. SQL Server performs full-text population in the background with \texttt{CHANGE\_TRACKING = AUTO}, so a new token may become searchable after the write. MongoDB maintains the text index during the write, which can increase write latency.
+\end{enumerate}
+
+
+
+\UCFourDiagram
+
+\section{UC5: Analytical Aggregation \texorpdfstring{$\rightarrow$}{->} Clustered Columnstore Index (SQL Server)}
+
+\ReportBlock{Problem}
+Analytical and reporting queries often scan millions of rows to compute \texttt{GROUP BY} totals across just one or two columns. In a traditional row-oriented table (Rowstore Heap), all 14 columns of each row are stored side by side on 8\,KB pages. To aggregate just \texttt{OBJECT\_TYPE} and \texttt{OBJECT\_ID}, the DBMS must read pages containing columns beyond those needed into memory.
+
+\Needspace{15\baselineskip}
+\ReportBlock{Representative Query}
+The aggregation groups one million rows by type and reads only \texttt{OBJECT\_TYPE} and \texttt{OBJECT\_ID}. A separate point probe filters \texttt{ID=1} without an ID B-tree on either copy.
+\ReportBlock{SQL Server --- aggregation and point probe}
+\begin{SQLCode}
+SELECT OBJECT_TYPE, COUNT_BIG(*) AS n,
+       SUM(COALESCE(OBJECT_ID, 0)) AS s
+FROM dbo.UC5_Columnstore GROUP BY OBJECT_TYPE;
+
+SELECT ID, OWNER, OBJECT_NAME, OBJECT_TYPE
+FROM dbo.UC5_Columnstore WHERE ID = 1;
+\end{SQLCode}
+
+\ReportBlock{Chosen Index}
+We compare a 14-column Rowstore Heap (\textbf{Config B}) against a \textbf{Clustered Columnstore Index (CCI)} (\textbf{Config C}) in SQL Server \cite{mssqlcci}. Figure~\ref{fig:diag-uc5} contrasts row and column layouts. A CCI divides rows into rowgroups of up to $1,048,576$ and stores each column in compressed segments. Repeated values in \texttt{OBJECT\_TYPE} make compression promising.
+
+\ReportBlock{Representative index definition --- Config C}
+\begin{SQLCode}
+CREATE CLUSTERED COLUMNSTORE INDEX CCI_UC5
+ON dbo.UC5_Columnstore;
+\end{SQLCode}
+
+\ReportBlock{Why It Works}
+For the \texttt{GROUP BY} query, SQL Server can read only the two required column segments and process rows in vectorized batches (\textbf{Batch Mode}). Rowstore queries may also use batch mode, so the execution plans must establish which operators used it. \ReportBlock{Trade-Off}
+Compressed column segments are not modified in place: small \texttt{INSERT} batches ($<102,400$ rows) can enter an \textbf{\texttt{OPEN} delta rowgroup}, and \texttt{UPDATE}s can mark old rows in a \textbf{delete bitmap} while inserting new versions. This adds work for small writes.
+
+\UCFiveDiagram
+
+\section{UC6: Multi-Tag Membership \texorpdfstring{$\rightarrow$}{->} Multikey vs.\ Normalized Child Index}
+
+\ReportBlock{Problem}
+Applications frequently attach multiple categorical tags to each item (for example, tagging a database object with \texttt{owner:SYS}, \texttt{type:TABLE}, and \texttt{temporary:Y}) and search for items that contain either a single tag or a combination of two tags (\texttt{tag1 AND tag2}).
+
+\Needspace{15\baselineskip}
+\ReportBlock{Representative Query}
+Two single-tag probes use \texttt{type:TABLE} or \texttt{temporary:Y}; two two-tag probes use \texttt{owner:SYS + type:TABLE} or the selective pair below. Both queries return parent IDs.
+\ReportBlock{SQL Server --- two-tag membership}
+\begin{SQLCode}
+SELECT PARENT_ID FROM dbo.UC6_Read_C_Tag
+WHERE TAG IN (N'type:TABLE', N'temporary:Y')
+GROUP BY PARENT_ID HAVING COUNT(DISTINCT TAG) = 2;
+\end{SQLCode}
+\ReportBlock{MongoDB --- two-tag membership}
+\begin{MongoCode}
+db.uc6_read_C.find(
+  {tags: {$all: ['type:TABLE', 'temporary:Y']}},
+  {_id: 0, PARENT_ID: 1}
+);
+\end{MongoCode}
+
+\ReportBlock{Chosen Index}
+As Figure~\ref{fig:diag-uc6} shows, MongoDB creates one B-tree entry for each distinct tag in a document's array \cite{mongomultikey}. SQL Server stores tags in a normalized child table whose primary key is \texttt{(PARENT\_ID,TAG)}; C adds the reverse key order to seek by tag first.
+
+\ReportBlock{Representative index definitions --- Config C}
+The SQL child table retains its \texttt{(PARENT\_ID,TAG)} primary key; C adds the reversed secondary key. MongoDB automatically indexes the distinct array elements as multikey entries.
+\begin{SQLCode}
+CREATE INDEX IX_UC6_Tag_Parent
+ON dbo.UC6_Read_C_Tag (TAG, PARENT_ID);
+\end{SQLCode}
+\begin{MongoCode}
+db.uc6_read_C.createIndex(
+  {tags: 1}, {name: 'ix_uc6_tags'}
+);
+\end{MongoCode}
+
+\ReportBlock{Why It Works}
+Both indexes replace full scans with direct B-tree seeks by tag name. \ReportBlock{Trade-Off}
+A single MongoDB multikey index entry stores only one tag at a time; for a two-tag \texttt{\$all} query, MongoDB uses the index to seek the more selective tag, fetches those candidate documents from the collection (\texttt{FETCH}), and checks the second tag in memory. Furthermore, if each document has 3 to 5 tags, inserting one document requires inserting 3 to 5 index entries, increasing write overhead.
+
+
+\UCSixDiagram
+\FloatBarrier

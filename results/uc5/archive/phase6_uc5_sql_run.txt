@@ -1,0 +1,11 @@
+Changed database context to 'DBMS_EW_Group02'.
+Warning: The join order has been enforced because a local join hint is used.
+Warning: The join order has been enforced because a local join hint is used.
+RUN_CONTEXT|D760E3D4-301D-4E1A-BA48-4147714817B5|68|DBMS_EW_Group02|B=heap rowstore; C=clustered columnstore; 2 warmups + 25 repetitions
+COPY_READY|B|UC5_Rowstore|1000000
+COPY_READY|C|UC5_Columnstore|1000000
+QUERY_EXPECTED|AGG|35|600916089
+STORAGE|B|NULL|HEAP|1000000|229654528|230039552
+STORAGE|C|CCI_UC5|CLUSTERED COLUMNSTORE|1000000|9920512|10035200
+Msg 55003, Level 16, State 1, Server MarcusVu, Line 71
+UC5 aggregation result parity failed.

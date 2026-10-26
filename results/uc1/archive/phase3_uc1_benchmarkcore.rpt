@@ -1,0 +1,6 @@
+﻿section    database_name                                                                                                                    session_id sample_table_object_id note
+---------- -------------------------------------------------------------------------------------------------------------------------------- ---------- ---------------------- ------------------------------------------------------------------------
+CORE_READY DBMS_EW_Group02                                                                                                                  94         -1078224560            Run the smoke or UC benchmark in this exact query window and connection.
+
+
+Completion time: 2026-10-24T15:05:58.7867395+07:00

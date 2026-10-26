@@ -1,0 +1,39 @@
+# Local environments and editor state
+.vs/
+.vscode/
+.idea/
+.venv/
+**/.venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.streamlit/secrets.toml
+.env
+.env.*
+!.env.example
+
+# Generated LaTeX and presentation build files
+report/build/
+report/archive/
+demo/archive/
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
+# Large local source and optional-scale data. Accepted benchmark evidence stays tracked.
+local_data/source/big table export.sql
+local_data/source/fake_real_news/Fake.csv
+local_data/source/fake_real_news/True.csv
+local_data/derived/BIG_TABLE_1000K.csv
+local_data/derived/BIG_TABLE_15000K.csv

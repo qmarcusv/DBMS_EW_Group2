@@ -1,0 +1,107 @@
+{
+  "dataset_id": "BIG_TABLE_1K",
+  "passed": true,
+  "checked_at_local": "2026-10-05T23:03:22.526139+07:00",
+  "csv_path": "W:\\MYSELF\\HCMUT-university\\Senior\\HK_261\\DBMS\\BTL\\DBMS_EW_Group02\\local_data\\derived\\BIG_TABLE_1K.csv",
+  "csv_sha256": "0ccc54a62854aa02535c45ee33ae96d6d7478f855ce44fa69e252a5a930b939f",
+  "source_path": "W:\\MYSELF\\HCMUT-university\\Senior\\HK_261\\DBMS\\BTL\\DBMS_EW_Group02\\local_data\\source\\big table export.sql",
+  "source_size_bytes": 5705860718,
+  "validation_errors": [],
+  "profile": {
+    "row_count": 1000,
+    "min_id": 1,
+    "max_id": 1000,
+    "distinct_owner": 3,
+    "distinct_object_type": 5,
+    "distinct_object_id": 1000,
+    "null_counts": {
+      "ID": 0,
+      "OWNER": 0,
+      "OBJECT_NAME": 0,
+      "SUBOBJECT_NAME": 1000,
+      "OBJECT_ID": 0,
+      "DATA_OBJECT_ID": 24,
+      "OBJECT_TYPE": 0,
+      "CREATED": 0,
+      "LAST_DDL_TIME": 0,
+      "TIMESTAMP": 0,
+      "STATUS": 0,
+      "TEMPORARY": 0,
+      "GENERATED": 0,
+      "SECONDARY": 0
+    },
+    "samples": [
+      {
+        "row_number": 1,
+        "row": {
+          "ID": "1",
+          "OWNER": "SYS",
+          "OBJECT_NAME": "TS$",
+          "SUBOBJECT_NAME": "\\N",
+          "OBJECT_ID": "16",
+          "DATA_OBJECT_ID": "6",
+          "OBJECT_TYPE": "TABLE",
+          "CREATED": "2021-09-28T00:00:00",
+          "LAST_DDL_TIME": "2021-09-28T00:00:00",
+          "TIMESTAMP": "2021-09-28:04:31:15",
+          "STATUS": "VALID",
+          "TEMPORARY": "N",
+          "GENERATED": "N",
+          "SECONDARY": "N"
+        }
+      },
+      {
+        "row_number": 500,
+        "row": {
+          "ID": "500",
+          "OWNER": "SYS",
+          "OBJECT_NAME": "I_RLS_GRP",
+          "SUBOBJECT_NAME": "\\N",
+          "OBJECT_ID": "575",
+          "DATA_OBJECT_ID": "575",
+          "OBJECT_TYPE": "INDEX",
+          "CREATED": "2021-09-28T00:00:00",
+          "LAST_DDL_TIME": "2021-09-28T00:00:00",
+          "TIMESTAMP": "2021-09-28:04:32:22",
+          "STATUS": "VALID",
+          "TEMPORARY": "N",
+          "GENERATED": "N",
+          "SECONDARY": "N"
+        }
+      },
+      {
+        "row_number": 1000,
+        "row": {
+          "ID": "1000",
+          "OWNER": "SYS",
+          "OBJECT_NAME": "I_OLAP_CUBE_BUILD_PROCESSES$",
+          "SUBOBJECT_NAME": "\\N",
+          "OBJECT_ID": "1225",
+          "DATA_OBJECT_ID": "1225",
+          "OBJECT_TYPE": "INDEX",
+          "CREATED": "2021-09-28T00:00:00",
+          "LAST_DDL_TIME": "2021-09-28T00:00:00",
+          "TIMESTAMP": "2021-09-28:04:32:40",
+          "STATUS": "VALID",
+          "TEMPORARY": "N",
+          "GENERATED": "N",
+          "SECONDARY": "N"
+        }
+      }
+    ],
+    "source_sample_checks": [
+      {
+        "row_number": 1,
+        "matches_oracle_source": true
+      },
+      {
+        "row_number": 500,
+        "matches_oracle_source": true
+      },
+      {
+        "row_number": 1000,
+        "matches_oracle_source": true
+      }
+    ]
+  }
+}

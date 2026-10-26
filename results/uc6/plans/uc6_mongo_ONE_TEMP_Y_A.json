@@ -1,0 +1,114 @@
+{
+  "section": "READ_PLAN",
+  "run_id": "UC6-MONGO-2026-10-25T04:45:52.482Z",
+  "query_id": "ONE_TEMP_Y",
+  "config": "A",
+  "total_keys_examined": 0,
+  "total_docs_examined": 10000,
+  "returned_rows": 51,
+  "plan": {
+    "explainVersion": "1",
+    "queryPlanner": {
+      "namespace": "dbms_ew_group02.uc6_read_A",
+      "indexFilterSet": false,
+      "parsedQuery": {
+        "tags": {
+          "$eq": "temporary:Y"
+        }
+      },
+      "queryHash": "6EBB1676",
+      "planCacheKey": "6EBB1676",
+      "maxIndexedOrSolutionsReached": false,
+      "maxIndexedAndSolutionsReached": false,
+      "maxScansToExplodeReached": false,
+      "winningPlan": {
+        "stage": "PROJECTION_SIMPLE",
+        "transformBy": {
+          "_id": 0,
+          "PARENT_ID": 1
+        },
+        "inputStage": {
+          "stage": "COLLSCAN",
+          "filter": {
+            "tags": {
+              "$eq": "temporary:Y"
+            }
+          },
+          "direction": "forward"
+        }
+      },
+      "rejectedPlans": []
+    },
+    "executionStats": {
+      "executionSuccess": true,
+      "nReturned": 51,
+      "executionTimeMillis": 21,
+      "totalKeysExamined": 0,
+      "totalDocsExamined": 10000,
+      "executionStages": {
+        "stage": "PROJECTION_SIMPLE",
+        "nReturned": 51,
+        "executionTimeMillisEstimate": 3,
+        "works": 10001,
+        "advanced": 51,
+        "needTime": 9949,
+        "needYield": 0,
+        "saveState": 10,
+        "restoreState": 10,
+        "isEOF": 1,
+        "transformBy": {
+          "_id": 0,
+          "PARENT_ID": 1
+        },
+        "inputStage": {
+          "stage": "COLLSCAN",
+          "filter": {
+            "tags": {
+              "$eq": "temporary:Y"
+            }
+          },
+          "nReturned": 51,
+          "executionTimeMillisEstimate": 2,
+          "works": 10001,
+          "advanced": 51,
+          "needTime": 9949,
+          "needYield": 0,
+          "saveState": 10,
+          "restoreState": 10,
+          "isEOF": 1,
+          "direction": "forward",
+          "docsExamined": 10000
+        }
+      }
+    },
+    "command": {
+      "find": "uc6_read_A",
+      "filter": {
+        "tags": "temporary:Y"
+      },
+      "projection": {
+        "_id": 0,
+        "PARENT_ID": 1
+      },
+      "$db": "dbms_ew_group02"
+    },
+    "serverInfo": {
+      "host": "MarcusVu",
+      "port": 27017,
+      "version": "7.0.12",
+      "gitVersion": "b6513ce0781db6818e24619e8a461eae90bc94fc"
+    },
+    "serverParameters": {
+      "internalQueryFacetBufferSizeBytes": 104857600,
+      "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+      "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+      "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+      "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+      "internalQueryProhibitBlockingMergeOnMongoS": 0,
+      "internalQueryMaxAddToSetBytes": 104857600,
+      "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+      "internalQueryFrameworkControl": "trySbeRestricted"
+    },
+    "ok": 1
+  }
+}

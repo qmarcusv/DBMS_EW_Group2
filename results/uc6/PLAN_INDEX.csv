@@ -1,0 +1,17 @@
+group,dbms,label,plan_path,source_transcript
+uc6,SQL,ONE_TABLE_A,results/uc6/plans/uc6_sql_ONE_TABLE_A.sqlplan,results/uc6/plans/uc6_sql_diagnostics.txt
+uc6,Mongo,ONE_TABLE_A,results/uc6/plans/uc6_mongo_ONE_TABLE_A.json,results/uc6/accepted/uc6_mongo_run.jsonl
+uc6,SQL,ONE_TABLE_C,results/uc6/plans/uc6_sql_ONE_TABLE_C.sqlplan,results/uc6/plans/uc6_sql_diagnostics.txt
+uc6,Mongo,ONE_TABLE_C,results/uc6/plans/uc6_mongo_ONE_TABLE_C.json,results/uc6/accepted/uc6_mongo_run.jsonl
+uc6,SQL,TWO_SYS_TABLE_A,results/uc6/plans/uc6_sql_TWO_SYS_TABLE_A.sqlplan,results/uc6/plans/uc6_sql_diagnostics.txt
+uc6,Mongo,TWO_SYS_TABLE_A,results/uc6/plans/uc6_mongo_TWO_SYS_TABLE_A.json,results/uc6/accepted/uc6_mongo_run.jsonl
+uc6,SQL,TWO_SYS_TABLE_C,results/uc6/plans/uc6_sql_TWO_SYS_TABLE_C.sqlplan,results/uc6/plans/uc6_sql_diagnostics.txt
+uc6,Mongo,TWO_SYS_TABLE_C,results/uc6/plans/uc6_mongo_TWO_SYS_TABLE_C.json,results/uc6/accepted/uc6_mongo_run.jsonl
+uc6,SQL,ONE_TEMP_Y_A,results/uc6/plans/uc6_sql_ONE_TEMP_Y_A.sqlplan,results/uc6/plans/uc6_sql_diagnostics.txt
+uc6,Mongo,ONE_TEMP_Y_A,results/uc6/plans/uc6_mongo_ONE_TEMP_Y_A.json,results/uc6/accepted/uc6_mongo_run.jsonl
+uc6,SQL,ONE_TEMP_Y_C,results/uc6/plans/uc6_sql_ONE_TEMP_Y_C.sqlplan,results/uc6/plans/uc6_sql_diagnostics.txt
+uc6,Mongo,ONE_TEMP_Y_C,results/uc6/plans/uc6_mongo_ONE_TEMP_Y_C.json,results/uc6/accepted/uc6_mongo_run.jsonl
+uc6,SQL,TWO_TABLE_TEMP_Y_A,results/uc6/plans/uc6_sql_TWO_TABLE_TEMP_Y_A.sqlplan,results/uc6/plans/uc6_sql_diagnostics.txt
+uc6,Mongo,TWO_TABLE_TEMP_Y_A,results/uc6/plans/uc6_mongo_TWO_TABLE_TEMP_Y_A.json,results/uc6/accepted/uc6_mongo_run.jsonl
+uc6,SQL,TWO_TABLE_TEMP_Y_C,results/uc6/plans/uc6_sql_TWO_TABLE_TEMP_Y_C.sqlplan,results/uc6/plans/uc6_sql_diagnostics.txt
+uc6,Mongo,TWO_TABLE_TEMP_Y_C,results/uc6/plans/uc6_mongo_TWO_TABLE_TEMP_Y_C.json,results/uc6/accepted/uc6_mongo_run.jsonl

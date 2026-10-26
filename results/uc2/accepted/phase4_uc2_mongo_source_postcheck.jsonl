@@ -1,0 +1,2 @@
+{"name":"big_table_100k","rows":100000,"y":254,"indexes":["_id_","TEMPORARY_1"]}
+{"name":"big_table_1000K","rows":1000000,"y":2405,"indexes":["_id_","TEMPORARY_1"]}

@@ -1,0 +1,63 @@
+\chapter{Data Provenance, Artifact Manifest, and Reproduction Guide}
+\label{app:repro}
+
+This appendix records the exact file provenance, SHA-256 checksums, evidence artifact paths, and commands required to reproduce the experiments without cluttering the main chapters.
+
+\section{Dataset Provenance and SHA-256 Checksums}
+Table~\ref{tab:app-hashes} lists the verified local data files, exact byte counts, and SHA-256 hashes checked during Phases 1, 6, 7, and 8.
+
+\begin{table}[H]
+\centering\footnotesize
+\caption{Verified dataset files, target objects, byte sizes, and SHA-256 hashes.}
+\label{tab:app-hashes}
+\begin{tabularx}{\linewidth}{@{}l r l >{\raggedright\arraybackslash}X@{}}
+\toprule
+File Path (\texttt{local\_data/...}) & Bytes & DBMS Targets & Verified SHA-256 Checksum\\
+\midrule
+\texttt{derived/BIG\_TABLE\_10K.csv} & $1,186,241$ & \texttt{DEMO\_BIG\_TABLE\_10K} / \texttt{big\_table\_10K} & \path{7f41f9d5a36b932a25101cc8929aad540a3f9f76ae68b5d434a221b7d6d4f116}\\
+\texttt{derived/BIG\_TABLE\_100K.csv} & $14,377,944$ & \texttt{DEMO\_BIG\_TABLE\_100K} / \texttt{big\_table\_100k} & \path{9c25e7db9f082818de200dce32da368cc735cdcfaf03839fe1ef18da3d66ef9d}\\
+\texttt{derived/BIG\_TABLE\_1000K.csv} & $147,724,204$ & \texttt{DEMO\_BIG\_TABLE\_1000K} / \texttt{big\_table\_1000K} & \path{8183c2bd49a07ba7dd800b2258100051bf02d2be15023ad3436603f40e6fbb4c}\\
+\texttt{derived/uc4/uc4\_seed\_10k.jsonl} & $26,389,031$ & \texttt{UC4\_News\_Seed\_10K} / \texttt{uc4\_news\_seed\_10k} & \path{2f09bc3aef85c095838d580d8f2857b4a8ee82144ca5fd3d61066be337d8dd97}\\
+\texttt{derived/uc6/parents\_10k.jsonl} & $1,196,609$ & \texttt{UC6\_*\_Parent}, \texttt{UC6\_*\_Tag} / \texttt{uc6\_mongo\_*} & \path{19519d7bcb66fa8231287298654a3fecc045d45a33a64e00ecb14b240f28ccd1}\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\Needspace{14\baselineskip}
+\section{Accepted Benchmark Evidence and Execution Plans}
+All numbers in Chapter~\ref{ch:results} were audited by \path{analysis/phase8_review.py} and \path{analysis/phase8_write_review.py}, producing \path{results/phase8/read_cases.csv} (128 read cells) and \path{results/phase8/write_cases.csv} (104 write cells). Table~\ref{tab:app-artifacts} maps each use case to its executable scripts, accepted raw transcripts, and captured plan directories.
+
+\begin{table}[H]
+\centering\footnotesize
+\caption{Executable scripts, accepted raw output files, and captured plan counts across UC1--UC6.}
+\label{tab:app-artifacts}
+\begin{tabularx}{\linewidth}{@{}l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X r@{}}
+\toprule
+UC & SQL Server \& MongoDB Scripts & Accepted Raw Output Files (\texttt{results/...}) & Plans\\
+\midrule
+UC1 & \path{sql/uc1_compound/}, \path{mongo/uc1_compound/} & \path{uc1/accepted/phase3_uc1_sql_benchmark.txt}, \path{uc1/accepted/phase3_uc1_mongo_benchmark_rerun.jsonl} & 24 (12 SQL, 12 Mongo)\\
+UC2 & \path{sql/uc2_filtered/}, \path{mongo/uc2_partial/} & \path{uc2/accepted/phase4_uc2_sql_run_v4.txt}, \path{uc2/accepted/phase4_uc2_mongo_run.jsonl} & 32 (20 SQL, 12 Mongo)\\
+UC3 & \path{sql/uc3_covering/}, \path{mongo/uc3_covered/} & \path{uc3/accepted/phase5_uc3_sql_run.txt}, \path{uc3/accepted/phase5_uc3_mongo_run.jsonl} & 36 (18 SQL, 18 Mongo)\\
+UC4 & \path{sql/uc4_text/}, \path{mongo/uc4_text/} & \path{uc4/accepted/uc4_sql_run.txt}, \path{uc4/accepted/uc4_mongo_run.jsonl}, \path{uc4/accepted/uc4_summary.json} & 24 (12 SQL, 12 Mongo)\\
+UC5 & \path{sql/uc5_columnstore/} & \path{uc5/accepted/phase6_uc5_sql_run_v2.txt} & 4 (4 SQL \texttt{.sqlplan})\\
+UC6 & \path{sql/uc6_normalized/}, \path{mongo/uc6_multikey/} & \path{uc6/accepted/uc6_sql_run.txt}, \path{uc6/accepted/uc6_mongo_run.jsonl}, \path{uc6/accepted/uc6_summary.json} & 16 (8 SQL, 8 Mongo)\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Rebuilding the Report and Running the Live Demo}
+To regenerate all figures from the Phase 8 audited evidence and recompile \path{report/main.pdf} from the workspace root (\texttt{EW\_redo}):
+\begin{verbatim}
+py -3.13 report/build_figures.py
+Push-Location report
+latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build main.tex
+Copy-Item build/main.pdf main.pdf -Force
+Pop-Location
+\end{verbatim}
+
+For the classroom presentation, we organize our live demonstration around three short storylines:
+\begin{enumerate}
+\item \textbf{Part 1 --- Compound Key Order \& Sort Elimination (UC1):} Show why a single-column index on \texttt{OWNER = 'SYS'} regresses in MongoDB ($462.8$\,ms vs.\ $241.0$\,ms scan), how the 3-key compound index drops \texttt{U1a} to $2.34$\,ms ($9.46$\,ms in SQL), why omitting \texttt{OWNER} (\texttt{U1c}) prevents a seek, and how \texttt{U1d} eliminates the \texttt{Sort} operator.
+\item \textbf{Part 2 --- Filtered/Partial Index Savings vs.\ Outside-Subset Fallback (UC2) \& Covering Lookup Elimination (UC3):} Show the $>99.5\%$ index storage reduction on \texttt{TEMPORARY = 'Y'} vs.\ full scan fallback on \texttt{'N'}, followed by \texttt{RID Lookup} / \texttt{FETCH} elimination on UC3 medium ranges.
+\item \textbf{Part 3 --- Full-Text Search Semantics \& Write Trade-Offs (UC4) and Columnstore Compression (UC5):} Contrast multi-second \texttt{LIKE} scans with $14$--$23$\,ms \texttt{CONTAINS} and $1.8$--$6.4$\,ms \texttt{\$text} queries, compare SQL Server's $5.80$\,s async visibility lag against MongoDB's $-95.3\%$ sync insert drop, and inspect SQL Server's $23.15:1$ columnstore compression and post-write \texttt{OPEN} delta rowgroup.
+\end{enumerate}

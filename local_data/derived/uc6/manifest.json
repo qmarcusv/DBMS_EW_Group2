@@ -1,0 +1,42 @@
+{
+  "dataset_id": "BIG_TABLE_10K_UC6_TAGS",
+  "source_dataset_id": "BIG_TABLE_10K",
+  "source_csv_sha256": "7f41f9d5a36b932a25101cc8929aad540a3f9f76ae68b5d434a221b7d6d4f116",
+  "jsonl_sha256": "19519d7bcb66fa8231287298654a3fecc045d45a33a64e00ecb14b240f28ccd1",
+  "parents": 10000,
+  "tag_rows": 30471,
+  "distinct_array_lengths": {
+    "3": 9631,
+    "4": 267,
+    "5": 102
+  },
+  "tag_rule": "owner, type, temporary always; generated:Y and subobject:present only if true; sorted distinct tags",
+  "queries": {
+    "ONE_TABLE": {
+      "tags": [
+        "type:TABLE"
+      ],
+      "count": 1247
+    },
+    "TWO_SYS_TABLE": {
+      "tags": [
+        "owner:SYS",
+        "type:TABLE"
+      ],
+      "count": 1125
+    },
+    "ONE_TEMP_Y": {
+      "tags": [
+        "temporary:Y"
+      ],
+      "count": 51
+    },
+    "TWO_TABLE_TEMP_Y": {
+      "tags": [
+        "type:TABLE",
+        "temporary:Y"
+      ],
+      "count": 41
+    }
+  }
+}

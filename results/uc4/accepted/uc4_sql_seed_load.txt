@@ -1,0 +1,1 @@
+{"section": "SQL_SEED_READY", "rows": 10000, "source_jsonl_sha256": "2f09bc3aef865ccc85cc80eba9cc9104aae2af8fa9e81cb845dadc345fd8dd97", "driver": "ODBC Driver 18 for SQL Server"}

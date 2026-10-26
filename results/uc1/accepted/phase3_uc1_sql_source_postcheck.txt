@@ -1,0 +1,8 @@
+source_rows|id_sum
+-----------|------
+100000|5000050000
+name
+----
+IX_DEMO_OBJECT_ID
+IX_DEMO_S2_Filtered
+IX_DEMO_S2_Full

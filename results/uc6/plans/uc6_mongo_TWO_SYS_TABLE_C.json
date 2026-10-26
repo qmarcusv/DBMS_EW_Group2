@@ -1,0 +1,300 @@
+{
+  "section": "READ_PLAN",
+  "run_id": "UC6-MONGO-2026-10-25T04:45:52.482Z",
+  "query_id": "TWO_SYS_TABLE",
+  "config": "C",
+  "total_keys_examined": 1247,
+  "total_docs_examined": 1247,
+  "returned_rows": 1125,
+  "plan": {
+    "explainVersion": "1",
+    "queryPlanner": {
+      "namespace": "dbms_ew_group02.uc6_read_C",
+      "indexFilterSet": false,
+      "parsedQuery": {
+        "$and": [
+          {
+            "tags": {
+              "$eq": "owner:SYS"
+            }
+          },
+          {
+            "tags": {
+              "$eq": "type:TABLE"
+            }
+          }
+        ]
+      },
+      "queryHash": "36D5FB57",
+      "planCacheKey": "E6420FC6",
+      "maxIndexedOrSolutionsReached": false,
+      "maxIndexedAndSolutionsReached": false,
+      "maxScansToExplodeReached": false,
+      "winningPlan": {
+        "stage": "PROJECTION_SIMPLE",
+        "transformBy": {
+          "_id": 0,
+          "PARENT_ID": 1
+        },
+        "inputStage": {
+          "stage": "FETCH",
+          "filter": {
+            "tags": {
+              "$eq": "owner:SYS"
+            }
+          },
+          "inputStage": {
+            "stage": "IXSCAN",
+            "keyPattern": {
+              "tags": 1
+            },
+            "indexName": "ix_uc6_tags",
+            "isMultiKey": true,
+            "multiKeyPaths": {
+              "tags": [
+                "tags"
+              ]
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "forward",
+            "indexBounds": {
+              "tags": [
+                "[\"type:TABLE\", \"type:TABLE\"]"
+              ]
+            }
+          }
+        }
+      },
+      "rejectedPlans": [
+        {
+          "stage": "PROJECTION_SIMPLE",
+          "transformBy": {
+            "_id": 0,
+            "PARENT_ID": 1
+          },
+          "inputStage": {
+            "stage": "FETCH",
+            "filter": {
+              "tags": {
+                "$eq": "type:TABLE"
+              }
+            },
+            "inputStage": {
+              "stage": "IXSCAN",
+              "keyPattern": {
+                "tags": 1
+              },
+              "indexName": "ix_uc6_tags",
+              "isMultiKey": true,
+              "multiKeyPaths": {
+                "tags": [
+                  "tags"
+                ]
+              },
+              "isUnique": false,
+              "isSparse": false,
+              "isPartial": false,
+              "indexVersion": 2,
+              "direction": "forward",
+              "indexBounds": {
+                "tags": [
+                  "[\"owner:SYS\", \"owner:SYS\"]"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "stage": "PROJECTION_SIMPLE",
+          "transformBy": {
+            "_id": 0,
+            "PARENT_ID": 1
+          },
+          "inputStage": {
+            "stage": "FETCH",
+            "filter": {
+              "$and": [
+                {
+                  "tags": {
+                    "$eq": "owner:SYS"
+                  }
+                },
+                {
+                  "tags": {
+                    "$eq": "type:TABLE"
+                  }
+                }
+              ]
+            },
+            "inputStage": {
+              "stage": "AND_SORTED",
+              "inputStages": [
+                {
+                  "stage": "IXSCAN",
+                  "keyPattern": {
+                    "tags": 1
+                  },
+                  "indexName": "ix_uc6_tags",
+                  "isMultiKey": true,
+                  "multiKeyPaths": {
+                    "tags": [
+                      "tags"
+                    ]
+                  },
+                  "isUnique": false,
+                  "isSparse": false,
+                  "isPartial": false,
+                  "indexVersion": 2,
+                  "direction": "forward",
+                  "indexBounds": {
+                    "tags": [
+                      "[\"owner:SYS\", \"owner:SYS\"]"
+                    ]
+                  }
+                },
+                {
+                  "stage": "IXSCAN",
+                  "keyPattern": {
+                    "tags": 1
+                  },
+                  "indexName": "ix_uc6_tags",
+                  "isMultiKey": true,
+                  "multiKeyPaths": {
+                    "tags": [
+                      "tags"
+                    ]
+                  },
+                  "isUnique": false,
+                  "isSparse": false,
+                  "isPartial": false,
+                  "indexVersion": 2,
+                  "direction": "forward",
+                  "indexBounds": {
+                    "tags": [
+                      "[\"type:TABLE\", \"type:TABLE\"]"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "executionStats": {
+      "executionSuccess": true,
+      "nReturned": 1125,
+      "executionTimeMillis": 8,
+      "totalKeysExamined": 1247,
+      "totalDocsExamined": 1247,
+      "executionStages": {
+        "stage": "PROJECTION_SIMPLE",
+        "nReturned": 1125,
+        "executionTimeMillisEstimate": 0,
+        "works": 1248,
+        "advanced": 1125,
+        "needTime": 122,
+        "needYield": 0,
+        "saveState": 1,
+        "restoreState": 1,
+        "isEOF": 1,
+        "transformBy": {
+          "_id": 0,
+          "PARENT_ID": 1
+        },
+        "inputStage": {
+          "stage": "FETCH",
+          "filter": {
+            "tags": {
+              "$eq": "owner:SYS"
+            }
+          },
+          "nReturned": 1125,
+          "executionTimeMillisEstimate": 0,
+          "works": 1248,
+          "advanced": 1125,
+          "needTime": 122,
+          "needYield": 0,
+          "saveState": 1,
+          "restoreState": 1,
+          "isEOF": 1,
+          "docsExamined": 1247,
+          "alreadyHasObj": 0,
+          "inputStage": {
+            "stage": "IXSCAN",
+            "nReturned": 1247,
+            "executionTimeMillisEstimate": 0,
+            "works": 1248,
+            "advanced": 1247,
+            "needTime": 0,
+            "needYield": 0,
+            "saveState": 1,
+            "restoreState": 1,
+            "isEOF": 1,
+            "keyPattern": {
+              "tags": 1
+            },
+            "indexName": "ix_uc6_tags",
+            "isMultiKey": true,
+            "multiKeyPaths": {
+              "tags": [
+                "tags"
+              ]
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "forward",
+            "indexBounds": {
+              "tags": [
+                "[\"type:TABLE\", \"type:TABLE\"]"
+              ]
+            },
+            "keysExamined": 1247,
+            "seeks": 1,
+            "dupsTested": 1247,
+            "dupsDropped": 0
+          }
+        }
+      }
+    },
+    "command": {
+      "find": "uc6_read_C",
+      "filter": {
+        "tags": {
+          "$all": [
+            "owner:SYS",
+            "type:TABLE"
+          ]
+        }
+      },
+      "projection": {
+        "_id": 0,
+        "PARENT_ID": 1
+      },
+      "$db": "dbms_ew_group02"
+    },
+    "serverInfo": {
+      "host": "MarcusVu",
+      "port": 27017,
+      "version": "7.0.12",
+      "gitVersion": "b6513ce0781db6818e24619e8a461eae90bc94fc"
+    },
+    "serverParameters": {
+      "internalQueryFacetBufferSizeBytes": 104857600,
+      "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+      "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+      "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+      "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+      "internalQueryProhibitBlockingMergeOnMongoS": 0,
+      "internalQueryMaxAddToSetBytes": 104857600,
+      "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+      "internalQueryFrameworkControl": "trySbeRestricted"
+    },
+    "ok": 1
+  }
+}

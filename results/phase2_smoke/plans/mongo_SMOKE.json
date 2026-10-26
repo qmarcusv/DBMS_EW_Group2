@@ -1,0 +1,103 @@
+{
+  "section": "PLAN",
+  "run_id": "P2-2026-10-24T01:14:06.124Z-408598",
+  "query_id": "P2_SMOKE_FULL_10K",
+  "total_keys_examined": 0,
+  "total_docs_examined": 10000,
+  "returned_rows": 10000,
+  "plan": {
+    "explainVersion": "1",
+    "queryPlanner": {
+      "namespace": "dbms_ew_group02.big_table_10K",
+      "indexFilterSet": false,
+      "parsedQuery": {},
+      "queryHash": "2B5D92D9",
+      "planCacheKey": "2B5D92D9",
+      "maxIndexedOrSolutionsReached": false,
+      "maxIndexedAndSolutionsReached": false,
+      "maxScansToExplodeReached": false,
+      "winningPlan": {
+        "stage": "PROJECTION_SIMPLE",
+        "transformBy": {
+          "_id": 0,
+          "ID": 1,
+          "OBJECT_ID": 1,
+          "OBJECT_NAME": 1
+        },
+        "inputStage": {
+          "stage": "COLLSCAN",
+          "direction": "forward"
+        }
+      },
+      "rejectedPlans": []
+    },
+    "executionStats": {
+      "executionSuccess": true,
+      "nReturned": 10000,
+      "executionTimeMillis": 5,
+      "totalKeysExamined": 0,
+      "totalDocsExamined": 10000,
+      "executionStages": {
+        "stage": "PROJECTION_SIMPLE",
+        "nReturned": 10000,
+        "executionTimeMillisEstimate": 0,
+        "works": 10001,
+        "advanced": 10000,
+        "needTime": 0,
+        "needYield": 0,
+        "saveState": 10,
+        "restoreState": 10,
+        "isEOF": 1,
+        "transformBy": {
+          "_id": 0,
+          "ID": 1,
+          "OBJECT_ID": 1,
+          "OBJECT_NAME": 1
+        },
+        "inputStage": {
+          "stage": "COLLSCAN",
+          "nReturned": 10000,
+          "executionTimeMillisEstimate": 0,
+          "works": 10001,
+          "advanced": 10000,
+          "needTime": 0,
+          "needYield": 0,
+          "saveState": 10,
+          "restoreState": 10,
+          "isEOF": 1,
+          "direction": "forward",
+          "docsExamined": 10000
+        }
+      }
+    },
+    "command": {
+      "find": "big_table_10K",
+      "filter": {},
+      "projection": {
+        "_id": 0,
+        "ID": 1,
+        "OBJECT_ID": 1,
+        "OBJECT_NAME": 1
+      },
+      "$db": "dbms_ew_group02"
+    },
+    "serverInfo": {
+      "host": "MarcusVu",
+      "port": 27017,
+      "version": "7.0.12",
+      "gitVersion": "b6513ce0781db6818e24619e8a461eae90bc94fc"
+    },
+    "serverParameters": {
+      "internalQueryFacetBufferSizeBytes": 104857600,
+      "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+      "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+      "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+      "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+      "internalQueryProhibitBlockingMergeOnMongoS": 0,
+      "internalQueryMaxAddToSetBytes": 104857600,
+      "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+      "internalQueryFrameworkControl": "trySbeRestricted"
+    },
+    "ok": 1
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "section": "READ_PLAN",
+  "run_id": "UC1-2026-10-24T08:12:17.664Z-50449",
+  "configuration": "C",
+  "query_id": "U1d",
+  "total_keys_examined": 398,
+  "total_docs_examined": 398,
+  "returned_rows": 398,
+  "plan": {
+    "explainVersion": "1",
+    "queryPlanner": {
+      "namespace": "dbms_ew_group02.uc1_bench_100K",
+      "indexFilterSet": false,
+      "parsedQuery": {
+        "OWNER": {
+          "$eq": "CTXSYS"
+        }
+      },
+      "queryHash": "3E2B5067",
+      "planCacheKey": "55444EDC",
+      "maxIndexedOrSolutionsReached": false,
+      "maxIndexedAndSolutionsReached": false,
+      "maxScansToExplodeReached": false,
+      "winningPlan": {
+        "stage": "PROJECTION_SIMPLE",
+        "transformBy": {
+          "_id": 0,
+          "ID": 1,
+          "OWNER": 1,
+          "OBJECT_TYPE": 1,
+          "OBJECT_ID": 1
+        },
+        "inputStage": {
+          "stage": "FETCH",
+          "inputStage": {
+            "stage": "IXSCAN",
+            "keyPattern": {
+              "OWNER": 1,
+              "OBJECT_TYPE": 1,
+              "OBJECT_ID": 1
+            },
+            "indexName": "ix_uc1_owner_type_object_id",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "OWNER": [],
+              "OBJECT_TYPE": [],
+              "OBJECT_ID": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "forward",
+            "indexBounds": {
+              "OWNER": [
+                "[\"CTXSYS\", \"CTXSYS\"]"
+              ],
+              "OBJECT_TYPE": [
+                "[MinKey, MaxKey]"
+              ],
+              "OBJECT_ID": [
+                "[MinKey, MaxKey]"
+              ]
+            }
+          }
+        }
+      },
+      "rejectedPlans": []
+    },
+    "executionStats": {
+      "executionSuccess": true,
+      "nReturned": 398,
+      "executionTimeMillis": 1,
+      "totalKeysExamined": 398,
+      "totalDocsExamined": 398,
+      "executionStages": {
+        "stage": "PROJECTION_SIMPLE",
+        "nReturned": 398,
+        "executionTimeMillisEstimate": 0,
+        "works": 399,
+        "advanced": 398,
+        "needTime": 0,
+        "needYield": 0,
+        "saveState": 0,
+        "restoreState": 0,
+        "isEOF": 1,
+        "transformBy": {
+          "_id": 0,
+          "ID": 1,
+          "OWNER": 1,
+          "OBJECT_TYPE": 1,
+          "OBJECT_ID": 1
+        },
+        "inputStage": {
+          "stage": "FETCH",
+          "nReturned": 398,
+          "executionTimeMillisEstimate": 0,
+          "works": 399,
+          "advanced": 398,
+          "needTime": 0,
+          "needYield": 0,
+          "saveState": 0,
+          "restoreState": 0,
+          "isEOF": 1,
+          "docsExamined": 398,
+          "alreadyHasObj": 0,
+          "inputStage": {
+            "stage": "IXSCAN",
+            "nReturned": 398,
+            "executionTimeMillisEstimate": 0,
+            "works": 399,
+            "advanced": 398,
+            "needTime": 0,
+            "needYield": 0,
+            "saveState": 0,
+            "restoreState": 0,
+            "isEOF": 1,
+            "keyPattern": {
+              "OWNER": 1,
+              "OBJECT_TYPE": 1,
+              "OBJECT_ID": 1
+            },
+            "indexName": "ix_uc1_owner_type_object_id",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "OWNER": [],
+              "OBJECT_TYPE": [],
+              "OBJECT_ID": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "forward",
+            "indexBounds": {
+              "OWNER": [
+                "[\"CTXSYS\", \"CTXSYS\"]"
+              ],
+              "OBJECT_TYPE": [
+                "[MinKey, MaxKey]"
+              ],
+              "OBJECT_ID": [
+                "[MinKey, MaxKey]"
+              ]
+            },
+            "keysExamined": 398,
+            "seeks": 1,
+            "dupsTested": 0,
+            "dupsDropped": 0
+          }
+        }
+      }
+    },
+    "command": {
+      "find": "uc1_bench_100K",
+      "filter": {
+        "OWNER": "CTXSYS"
+      },
+      "sort": {
+        "OBJECT_TYPE": 1,
+        "OBJECT_ID": 1
+      },
+      "projection": {
+        "_id": 0,
+        "ID": 1,
+        "OWNER": 1,
+        "OBJECT_TYPE": 1,
+        "OBJECT_ID": 1
+      },
+      "$db": "dbms_ew_group02"
+    },
+    "serverInfo": {
+      "host": "MarcusVu",
+      "port": 27017,
+      "version": "7.0.12",
+      "gitVersion": "b6513ce0781db6818e24619e8a461eae90bc94fc"
+    },
+    "serverParameters": {
+      "internalQueryFacetBufferSizeBytes": 104857600,
+      "internalQueryFacetMaxOutputDocSizeBytes": 104857600,
+      "internalLookupStageIntermediateDocumentMaxSizeBytes": 104857600,
+      "internalDocumentSourceGroupMaxMemoryBytes": 104857600,
+      "internalQueryMaxBlockingSortMemoryUsageBytes": 104857600,
+      "internalQueryProhibitBlockingMergeOnMongoS": 0,
+      "internalQueryMaxAddToSetBytes": 104857600,
+      "internalDocumentSourceSetWindowFieldsMaxMemoryBytes": 104857600,
+      "internalQueryFrameworkControl": "trySbeRestricted"
+    },
+    "ok": 1
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "generated_at_utc": "2026-10-21T17:51:07Z",
+  "source_sql_path": "W:\\MYSELF\\HCMUT-university\\Senior\\HK_261\\DBMS\\BTL\\DBMS_EW_Group02\\local_data\\source\\big table export.sql",
+  "sampling_method": "Deterministic sequential stream (nested prefix: 10K c 100K c 1M c 15M)",
+  "datasets": {
+    "15m": {
+      "file_path": "W:\\MYSELF\\HCMUT-university\\Senior\\HK_261\\DBMS\\BTL\\DBMS_EW_Group02\\local_data\\derived\\BIG_TABLE_15M.csv",
+      "row_count": 15000000,
+      "sha256": "fdc03f36fd18ece785b582ec696f010462c69d80fe0548d8260302fd67d3910a",
+      "size_bytes": 2243169465,
+      "object_id_2_rows": 214,
+      "temporary_y_rows": 35658
+    }
+  }
+}
