@@ -105,6 +105,15 @@ VERDICTS = {
     "uc6": ("Good for selective tags", "The 41-parent two-tag query: SQL 10.85 → 2.01 ms; Mongo 28.53 → 2.06 ms. Mongo still FETCHed 51 candidates."),
 }
 
+TAB_DECISIONS = {
+    "uc1": "Use the compound index when filters include the leading OWNER key and align with the sort order.",
+    "uc2": "Use the filtered or partial index for the stable, rare TEMPORARY='Y' workload.",
+    "uc3": "Use the covering index when avoiding base-row lookups outweighs its larger storage cost.",
+    "uc4": "Use full-text search for linguistic matching after checking that its result set fits the use case.",
+    "uc5": "Use clustered columnstore for the measured scan and aggregate workload.",
+    "uc6": "Use the tag-first index for selective tag membership searches.",
+}
+
 # One projected record per query, selected from the pinned derived corpora.
 # UC4 examples are substring (A) matches; text-index (C) ID sets can differ.
 QUERY_EXAMPLES = {
@@ -228,7 +237,7 @@ WORKFLOWS = {
     ),
 }
 
-# Tables 4.2, 4.4, 4.6, 4.8, 4.10 and 4.12 in main.pdf.
+# Tables 4.2, 4.4, 4.6, 4.8, 4.10 and 4.12 in DBMS_Group2_report.pdf.
 # These are the report's rounded display values, not newly measured runs.
 PDF_COST_TABLES = {
     "uc1": [
@@ -283,7 +292,7 @@ PDF_FIGURES = {
     "uc3": "Medium-range latency and covering-index storage",
     "uc4": "Equal-result MongoDB text latency and write throughput",
     "uc5": "Rowstore versus columnstore storage and latency",
-    "uc6": "Supplemental UC6 chart generated from the same accepted measurements; not embedded in main.pdf",
+    "uc6": "Supplemental UC6 chart generated from the same accepted measurements; not embedded in DBMS_Group2_report.pdf",
 }
 
 PDF_TABLE_NOTES = {
@@ -341,11 +350,29 @@ def load_verified() -> dict:
 
 def render_study() -> None:
     st.title("Use cases and index design")
-    st.caption("Group 02 · SQL Server 2025 and MongoDB 7.0 · Companion to presentation slides 5–21")
+    st.caption("Group 02 · SQL Server 2025 and MongoDB 7.0")
     st.markdown(
-        "Six workloads motivate six index choices. **A** has no optional experiment index, "
-        "**B** is a conventional alternative where applicable, and **C** is the workload-targeted design. "
-        "UC5 compares rowstore B with columnstore C; UC4 and UC6 have no B."
+        "Six workloads motivate six index choices.\n\n"
+        "- **A:** No optional experiment index.\n"
+        "- **B:** Conventional indexed alternative, where applicable.\n"
+        "- **C:** Workload-targeted design.\n\n"
+        "UC5 compares rowstore B with columnstore C. UC4 and UC6 have no B."
+    )
+
+    st.subheader("What was measured")
+    st.dataframe(
+        [
+            {"Metric": "Read latency ↓", "Measure": "Median (p50) and p95 in ms; 2 warmups and 25 timed runs", "Interpretation": "Lower is faster within the same engine."},
+            {"Metric": "Physical work ↓", "Measure": "SQL logical 8 KB page reads; MongoDB keys and documents examined", "Interpretation": "Lower work is preferable for the same result; units differ across engines."},
+            {"Metric": "Actual plan", "Measure": "Seek, scan, sort, lookup, IXSCAN, FETCH, batch mode", "Interpretation": "An index being present does not prove it was chosen."},
+            {"Metric": "Index / copy size ↓", "Measure": "Storage used by the index or whole copy", "Interpretation": "Lower storage cost is preferable for the same workload."},
+            {"Metric": "Build time ↓", "Measure": "Time to create the index", "Interpretation": "Lower build cost is preferable."},
+            {"Metric": "INSERT throughput ↑", "Measure": "Inserted rows or parents per second", "Interpretation": "Higher throughput is preferable."},
+            {"Metric": "Write latency ↓", "Measure": "INSERT or UPDATE p50 duration", "Interpretation": "Lower duration is preferable; UPDATE may include locating a row."},
+            {"Metric": "Result parity", "Measure": "Counts and complete IDs where needed", "Interpretation": "Different results cannot support a same-result speedup."},
+        ],
+        hide_index=True,
+        alt="Measurement definitions and interpretation rules",
     )
 
     st.subheader("Workload map")
@@ -400,19 +427,6 @@ def render_study() -> None:
                     st.caption("UC4 examples match substring scan A. Full-text C may return a different ID set.")
             st.markdown(f"**Tradeoff.** {case['tradeoff']}")
 
-    st.subheader("What was measured")
-    st.dataframe(
-        [
-            {"Metric": "Read latency", "Measure": "Median (p50) and p95 in ms; 2 warmups and 25 timed runs", "Interpretation": "Lower is faster within the same engine."},
-            {"Metric": "Physical work", "Measure": "SQL logical 8 KB page reads; MongoDB keys and documents examined", "Interpretation": "Counters explain the access path; units differ across engines."},
-            {"Metric": "Actual plan", "Measure": "Seek, scan, sort, lookup, IXSCAN, FETCH, batch mode", "Interpretation": "An index being present does not prove it was chosen."},
-            {"Metric": "Index cost", "Measure": "Index / copy size, build time, INSERT throughput, UPDATE latency", "Interpretation": "Read gains must be weighed against storage and writes."},
-            {"Metric": "Result parity", "Measure": "Counts and complete IDs where needed", "Interpretation": "Different results cannot support a same-result speedup."},
-        ],
-        hide_index=True,
-        alt="Measurement definitions and interpretation rules",
-    )
-
 
 def read_table(cases: list[dict]) -> list[dict]:
     grouped: dict[tuple, dict] = {}
@@ -450,17 +464,41 @@ def write_table(cases: list[dict]) -> list[dict]:
     return [grouped[key] for key in sorted(grouped)]
 
 
+def show_metric_directions(rows: list[dict]) -> list[dict]:
+    """Add interpretation arrows to displayed metric headers without changing evidence keys."""
+    lower = {"Size (MiB)", "Used space (MiB)", "Reported size", "Build (ms)", "Build (s)"}
+    upper = {"INSERT (rows/s)", "INSERT (parents/s)"}
+
+    def label(key: str) -> str:
+        if key in lower or key.endswith((" p50 ms", " p95 ms", " p50 (ms)")):
+            return f"{key} ↓"
+        if key in upper or key.endswith(" rows/s"):
+            return f"{key} ↑"
+        return key
+
+    return [{label(key): value for key, value in row.items()} for row in rows]
+
+
 def render_results(bundle: dict) -> None:
     st.title("Results and conclusions")
-    st.caption("Group 02 · Accepted Phase 8 measurements · Companion to presentation slides 22–29")
+    st.caption("Group 02")
     st.markdown(
-        "**How to read the tables:** Lower latency is better; higher INSERT throughput is better. "
-        "Compare A, B and C only within one engine, scale and query. B is an indexed alternative, "
-        "not always the baseline. UC5 has no A. SQL and MongoDB timing boundaries differ."
+        "**How to read the tables**\n\n"
+        "- **Latency ↓:** Lower is better. **INSERT throughput ↑:** Higher is better.\n"
+        "- Compare A, B and C only within the same engine, scale and query.\n"
+        "- B is an indexed alternative and is not always the baseline.\n"
+        "- UC5 has no A. SQL and MongoDB timing boundaries differ."
     )
 
     st.subheader("Figures and summary tables from the report")
-    st.caption("UC1–UC5 charts reproduce Figures 4.1–4.5 in main.pdf; the UC6 chart is supplemental. Read tables summarize Tables 4.1, 4.3, 4.5, 4.7, 4.9 and 4.11 and add p95 and result counts from accepted evidence. Cost tables reproduce Tables 4.2, 4.4, 4.6, 4.8, 4.10 and 4.12. Values are rounded for display.")
+    st.markdown(
+        "Source: **DBMS_Group2_report.pdf**\n\n"
+        "- UC1–UC5 charts reproduce Figures 4.1–4.5; the UC6 chart is supplemental.\n"
+        "- Read tables summarize Tables 4.1, 4.3, 4.5, 4.7, 4.9 and 4.11, "
+        "with p95 and result counts added from accepted evidence.\n"
+        "- Cost tables reproduce Tables 4.2, 4.4, 4.6, 4.8, 4.10 and 4.12.\n"
+        "- Values are rounded for display."
+    )
     report_tabs = st.tabs([f"{key.upper()} · {case['title']}" for key, case in USE_CASES.items()])
     all_reads = read_table(bundle["read"])
     for (key, case), tab in zip(USE_CASES.items(), report_tabs):
@@ -469,14 +507,20 @@ def render_results(bundle: dict) -> None:
             st.image(figure, width="stretch", caption=PDF_FIGURES[key], alt=PDF_FIGURES[key])
             st.markdown("**Read outcomes (report Table 4." + str(2 * int(key[-1]) - 1) + ")**")
             st.dataframe(
-                [row for row in all_reads if row["Use case"] == key.upper()],
+                show_metric_directions([row for row in all_reads if row["Use case"] == key.upper()]),
                 hide_index=True,
                 alt=f"{key.upper()} accepted read medians, tail latencies, result counts and parity",
             )
             st.caption(f"Physical work and plan: {PDF_WORK_NOTES[key]}")
             st.markdown("**Index cost (report Table 4." + str(2 * int(key[-1])) + ")**")
-            st.dataframe(PDF_COST_TABLES[key], hide_index=True, alt=f"{key.upper()} report index cost table")
+            st.dataframe(show_metric_directions(PDF_COST_TABLES[key]), hide_index=True, alt=f"{key.upper()} report index cost table")
             st.caption(PDF_TABLE_NOTES[key])
+            st.markdown(f"**Conclusion — {key.upper()}**")
+            st.markdown(
+                f"- **Decision:** {TAB_DECISIONS[key]}\n"
+                f"- **Measured evidence:** {VERDICTS[key][1]}\n"
+                f"- **Trade-off:** {case['tradeoff']}"
+            )
 
     st.subheader("What the six experiments show")
     st.dataframe(
@@ -489,7 +533,7 @@ def render_results(bundle: dict) -> None:
 
     st.subheader("Complete read comparison")
     st.caption("All 128 accepted read cells are grouped by engine, scale and query. A/B/C columns show p50 and p95 in milliseconds. A reported 0.000 ms is below timer resolution and must not be used as a speedup divisor.")
-    st.dataframe(read_table(bundle["read"]), hide_index=True, alt="Accepted A B C read latency comparison for all measured queries")
+    st.dataframe(show_metric_directions(all_reads), hide_index=True, alt="Accepted A B C read latency comparison for all measured queries")
     st.markdown(
         "**Reading the exceptions:** UC1 Mongo U1a's OWNER-only B is slower than A (462.78 vs 241.03 ms). "
         "UC2 N is excluded from the Y-only C index. UC3 Mongo 100K small is slower under C than B "
@@ -499,22 +543,23 @@ def render_results(bundle: dict) -> None:
 
     st.subheader("Write cost comparison")
     st.caption("All 104 accepted write cells are grouped by operation. UPDATE duration can include locating an unindexed row, so it is not an isolated measure of index maintenance.")
-    st.dataframe(write_table(bundle["write"]), hide_index=True, alt="Accepted A B C write latency and insert throughput comparison")
+    st.dataframe(show_metric_directions(write_table(bundle["write"])), hide_index=True, alt="Accepted A B C write latency and insert throughput comparison")
 
     st.subheader("Conclusion")
     st.markdown(
-        "The chosen index solves its intended workload when predicate selectivity, key order and projected columns "
-        "match the measured access path. Compound keys help aligned filters and sort; filtered indexes fit stable "
-        "rare subsets; covering indexes help lookup-heavy ranges; inverted indexes serve linguistic search; "
-        "columnstore suits scans and aggregates; tag-first indexes help selective membership. "
-        "Keep the counterexamples and costs in view: unmatched predicates may scan, wider indexes consume storage "
-        "and slow writes, and full-text search may change the result set. The evidence comes from one local run "
-        "with warm-cache samples; it does not establish concurrent or cold-cache performance."
+        "- **Overall:** An index helps its intended workload when predicate selectivity, key order and "
+        "projected columns match the measured access path.\n"
+        "- **UC1–UC3:** Compound keys help aligned filters and sorting; filtered indexes fit stable rare "
+        "subsets; covering indexes help ranges that would otherwise need lookups.\n"
+        "- **UC4–UC6:** Inverted indexes serve linguistic search; columnstore suits scans and aggregates; "
+        "tag-first indexes help selective membership.\n"
+        "- **Trade-offs:** Unmatched predicates may scan, wider indexes use more storage and can slow writes, "
+        "and full-text search may change the result set.\n"
     )
-    st.caption(
-        f"Evidence check: {len(bundle['read'])} read cells, {len(bundle['write'])} write cells, "
-        f"{len(bundle['plans'])} actual plans, {len(bundle['sources'])} hash-checked source files. "
-        "Source: results/phase8/evidence_review.json and results/phase8/write_cases.json."
+    st.markdown(
+        f"- **Evidence check:** {len(bundle['read'])} read cells, {len(bundle['write'])} write cells, "
+        f"{len(bundle['plans'])} actual plans and {len(bundle['sources'])} hash-checked source files.\n"
+        "- **Sources:** `results/phase8/evidence_review.json` and `results/phase8/write_cases.json`."
     )
 
 
@@ -524,7 +569,7 @@ def main() -> None:
         st.title("DBMS indexing study")
         st.caption("Group 02 · SQL Server 2025 · MongoDB 7.0")
         page = st.radio("Page", ("Use cases and method", "Results and conclusions"))
-        st.caption("Presentation: slides 5–29 · Accepted Phase 8 evidence")
+        # st.caption("Presentation: slides 5–29 · Accepted Phase 8 evidence")
 
     try:
         bundle = load_verified()
